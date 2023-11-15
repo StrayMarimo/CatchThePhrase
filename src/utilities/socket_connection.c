@@ -46,7 +46,8 @@ struct hostent *FindHost(char *hostname){
     struct hostent *server;
     server = gethostbyname(hostname);
     if (server == NULL) {
-        perror("Error: No such host.");
+        printf("Error: No such host.");
+        exit(EXIT_FAILURE);
     }
     return server;
 }
@@ -59,6 +60,7 @@ void EstablishConnection(int client_sock, struct hostent *server, int port_no) {
 
     // Connect to the server
     if (connect(client_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        perror("Error: connect() Failed.");
+        printf("Error: connect() Failed.");
+        exit(EXIT_FAILURE);
     }
 }

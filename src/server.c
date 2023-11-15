@@ -6,6 +6,7 @@
 #include "sizes.h"
 #include "socket_connection.h"
 #include "socket_communication.h"
+#include "common_utils.h"
 
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
@@ -16,10 +17,7 @@ int main(int argc, char *argv[]){
     time_t t;
 
     struct sockaddr_in server_addr, client_addr;
-    if (argc < 2) {
-        printf("Usage: %s port_no", argv[0]);
-        exit(1);
-    }
+    ValidateArgs(argv[0], 2, argc);
 
     CreateSocket(&server_sock);
     server_addr = *CreateSocketAddress(atoi(argv[1]));
