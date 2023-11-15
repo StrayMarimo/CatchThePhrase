@@ -3,7 +3,7 @@
 # Usage
 
 #### Compile:
-``` compile.sh ```
+``` ./compile.sh ```
 
 #### Run
 ``` cd src ```
