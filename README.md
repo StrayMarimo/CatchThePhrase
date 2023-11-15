@@ -1,11 +1,12 @@
 # Catch The Phrase
 
 # Usage
+
 #### Compile:
-```gcc -o server server.c```  
-```gcc -p client client.c```
+``` compile.sh ```
 
 #### Run
+``` cd src ```
 ``` ./server <port> ```  
 ``` ./client <host_name> <port>```
 

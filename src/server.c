@@ -9,9 +9,8 @@
 #include <stdbool.h>
 #include <limits.h>
 #include <time.h>
+#include "sizes.h"
 
-
-#define MAX_STRING 100
 
 void die_with_error(char *error_msg){
     printf("%s", error_msg);
@@ -20,7 +19,7 @@ void die_with_error(char *error_msg){
 
 void receiveMessage(int sock, char *buffer){
     int n;
-     bzero(buffer, 256);
+    bzero(buffer, 256);
         n = recv(sock, buffer, 255, 0);
     if (n < 0) die_with_error("Error: recv() Failed.");
 }
@@ -44,8 +43,8 @@ int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
     socklen_t client_size;
     int score = 100;
-    char topics[3][MAX_STRING] = {"Movies", "Song", "Anime" };
-    char phrase[MAX_STRING];
+    char topics[3][MAX_STRING_SIZE] = {"Movies", "Song", "Anime" };
+    char phrase[MAX_STRING_SIZE];
     char buffer[256];
     time_t t;
 
