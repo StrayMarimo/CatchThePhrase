@@ -1,42 +1,12 @@
-
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
+#include <stdio.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <stdbool.h>
-#include <limits.h>
 #include <time.h>
 #include "sizes.h"
 #include "socket_connection.h"
+#include "socket_communication.h"
 
-
-void die_with_error(char *error_msg){
-    printf("%s", error_msg);
-    exit(-1);
-}
-void receiveMessage(int sock, char *buffer){
-    int n;
-    bzero(buffer, 256);
-        n = recv(sock, buffer, 255, 0);
-    if (n < 0) die_with_error("Error: recv() Failed.");
-}
-char* sendMessage(int sock, char *buffer){
-    int n;
-
-    bzero(buffer, 256);
-    fgets(buffer, 255, stdin);
-
-    char* msg = buffer;
-
-    n = send(sock, buffer, strlen(buffer), 0);
-    if (n < 0) 
-        die_with_error("Error: send() Failed.");
-
-    return msg;
-}
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
     int score = 100;
@@ -63,7 +33,7 @@ int main(int argc, char *argv[]){
     
     srand((unsigned) time(&t));
     printf("Enter a phrase under topic: %s: ", topics[rand() % 3]);
-    printf("Your topic: %s", sendMessage(client_sock, buffer));
+    printf("Your topic: %s", SendMessage(client_sock, buffer));
 
     
     close(client_sock);

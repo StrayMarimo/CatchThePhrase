@@ -4,12 +4,7 @@
 #include <string.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <netdb.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <limits.h>
-#include <time.h>
 
 void CreateSocket(int *sock){
     printf("Creating socket...\n");
@@ -55,7 +50,7 @@ struct hostent *FindHost(char *hostname){
     }
     return server;
 }
-void establishConnection(int client_sock, struct hostent *server, int port_no) {
+void EstablishConnection(int client_sock, struct hostent *server, int port_no) {
     struct sockaddr_in server_addr;
     bzero((char *)&server_addr, sizeof(server_addr));
     server_addr.sin_family = AF_INET;

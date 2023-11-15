@@ -11,5 +11,5 @@ int HandleNewConnection(int server_sock, struct sockaddr_in *client_addr, sockle
 
 // Client Side
 struct hostent *FindHost(char *hostname);
-void establishConnection(int client_sock, struct hostent *server, int port_no);
+void EstablishConnection(int client_sock, struct hostent *server, int port_no);
 #endif
