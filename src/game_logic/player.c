@@ -19,6 +19,7 @@ void SetPhrase(struct Player *player, int client_sock) {
 }
 
 void SetGuessPhrase(struct Player *player, int client_sock) {
+    printf("Waiting for opponent to choose a topic...\n");
     char buffer[MAX_STRING_SIZE];
     ReceiveMessage(client_sock, buffer, true);
 

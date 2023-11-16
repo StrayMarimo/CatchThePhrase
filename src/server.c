@@ -11,42 +11,51 @@
 #include "player.h"
 #include <string.h>
 
+void setupSocketConnection(int *server_sock, int *client_sock, int port);
+char *setupTopic();
+
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
-    int score = 100;
-    char topics[3][MAX_STRING_SIZE] = {"Movies", "Song", "Anime" };
-    char phrase[MAX_STRING_SIZE];
-    char buffer[MAX_STRING_SIZE];
-    time_t t;
-
-    struct sockaddr_in server_addr, client_addr;
-    ValidateArgs(argv[0], 2, argc);
-
     struct Player player = CreatePlayer();
-    CreateSocket(&server_sock);
-    server_addr = *CreateSocketAddress(atoi(argv[1]));
-    BindSocket(&server_sock, &server_addr);
-    socklen_t client_size = sizeof(client_addr);
-    client_sock = HandleNewConnection(server_sock, &client_addr, &client_size);
 
-    printf("Connected to Player 2.\n");
-    usleep(2000);
-    system("clear");
-    
-    srand((unsigned) time(&t));
+    // Setup Connection
+    ValidateArgs(argv[0], 2, argc);
+    setupSocketConnection(&server_sock, &client_sock, atoi(argv[1]));
 
-    char *topic = topics[rand() % 3];
-    printf("Your topic: %s\n", topic);
-    SendMessage(client_sock, topic, false);
+    // Setup Topic
+    SendMessage(client_sock, setupTopic(), false);
     ReceiveAck(client_sock);
 
-    SetPhrase(&player, client_sock);
-
-    printf("Waiting for Player 2 to choose a topic...\n");
+    // Setup Phrases
+    SetPhrase(&player, client_sock); 
     SetGuessPhrase(&player, client_sock);
 
+    // Close Connection
     close(client_sock);
     close(server_sock);
     
     return 0; 
+}
+
+void setupSocketConnection(int *server_sock, int *client_sock, int port){
+    struct sockaddr_in server_addr, client_addr;
+    CreateSocket(server_sock);
+    server_addr = *CreateSocketAddress(port);
+    BindSocket(server_sock, &server_addr);
+    socklen_t client_size = sizeof(client_addr);
+    *client_sock = HandleNewConnection(*server_sock, &client_addr, &client_size);
+
+    printf("Connected to Player 2.\n");
+    usleep(2000);
+    system("clear");   
+}
+
+char *setupTopic() {
+    time_t t;
+    srand((unsigned) time(&t));
+
+    char *topic = topics[rand() % MAX_TOPIC];
+    printf("Your topic: %s\n", topic);
+
+    return topic;
 }

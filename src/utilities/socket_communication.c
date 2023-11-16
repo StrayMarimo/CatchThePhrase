@@ -32,6 +32,6 @@ void SendAck(int socket) {
 }
 
 void ReceiveAck(int socket) {
-    char buffer[3];
-    recv(socket, buffer, 3, 0);
+    char buffer[MAX_STRING_SIZE];
+    recv(socket, buffer, MAX_STRING_SIZE - 1, 0);
 }

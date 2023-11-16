@@ -9,36 +9,39 @@
 #include "player.h"
 #include <string.h>
 
+void setupSocketConnection(int *client_sock, int port, char *host);
 
 int main(int argc,  char *argv[]){
     int client_sock;
-    struct sockaddr_in server_addr;
-    struct hostent *server;
+    struct Player player = CreatePlayer();
     char buffer[MAX_STRING_SIZE];
 
+    // Setup Connection
     ValidateArgs(argv[0], 3, argc);
+    setupSocketConnection(&client_sock, atoi(argv[2]), argv[1]);
 
-    struct Player player = CreatePlayer();
-    CreateSocket(&client_sock);
-    server = FindHost(argv[1]);
-    EstablishConnection(client_sock, server, atoi(argv[2]));
-
-    printf("Connected to Player 1.\n");
-    usleep(2000);
-    system("clear");
-
+    // Setup Topic
     ReceiveMessage(client_sock, buffer, false);
     printf("The chosen topic: %s\n", buffer);
     SendAck(client_sock);
 
-    printf("Waiting for Player 1 to choose a topic...\n");
+    // Setup Phrases
     SetGuessPhrase(&player, client_sock);
-
     SetPhrase(&player, client_sock);
-    
 
+    // Close Connection
     close(client_sock);
     return 0;
 }
 
+void setupSocketConnection(int *client_sock, int port, char *host){
+    struct sockaddr_in server_addr;
+    struct hostent *server;
+    CreateSocket(client_sock);
+    server = FindHost(host);
+    EstablishConnection(*client_sock, server, port);
 
+    printf("Connected to Player 1.\n");
+    usleep(2000);
+    system("clear");
+}
