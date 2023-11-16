@@ -2,5 +2,5 @@
 #define COMMON_UTILS_H
 
 void ValidateArgs(char *file, int params_expected, int params_received);
-
+void DieWithError(char *errorMessage);
 #endif

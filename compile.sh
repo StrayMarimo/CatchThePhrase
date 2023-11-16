@@ -12,10 +12,12 @@ CLIENT_FILE="src/client.c"
 INCLUDE_DIRS="
     ${ROOT_HEADER}/constants/ 
     ${ROOT_HEADER}/utilities/
+    ${ROOT_HEADER}/structs/
 "
 # Add source files as needed
 SRC_FILES="
     ${ROOT_SRC}utilities/*.c
+    ${ROOT_SRC}game_logic/*.c
 "
 # compile
 gcc $INCLUDE_DIRS -o src/server $SERVER_FILE $SRC_FILES \

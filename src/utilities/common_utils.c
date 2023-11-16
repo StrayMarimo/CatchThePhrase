@@ -4,12 +4,17 @@
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
     if (params_expected != params_received) {
-        printf("Error: Invalid number of arguments.\n");
-        if (params_expected == 2) {
+        if (params_expected == 2) 
             printf("Usage: %s port_no\n", file);
-        } else if (params_expected == 3) {
+        else if (params_expected == 3) {
             printf("Usage: %s hostname port_no\n", file);
+        DieWithError("Invalid number of arguments.");
         }
-        exit(EXIT_FAILURE);
     }
 }
+
+void DieWithError(char *errorMessage) {
+    perror(errorMessage);
+    exit(EXIT_FAILURE);
+}
+
