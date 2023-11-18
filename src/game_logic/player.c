@@ -44,7 +44,6 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
     ReceiveMessage(client_sock, buffer, true);
 
     strcpy(player->opponent_phrase, buffer);
-    
 
     printf("Opponent Phrase: %s\n", player->opponent_phrase);
 
