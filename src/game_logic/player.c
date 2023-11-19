@@ -2,6 +2,7 @@
 #include "player.h"
 #include "socket_communication.h"
 #include <string.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -30,7 +31,7 @@ char* encryptPhrase(char* phrase, int phraseLength) {
     // if true change to asterisk
 
     for (int i = 0; i < phraseLength; i++) {
-        if (phrase[i] != ' ') {
+        if (isalpha(phrase[i])) {
             encryptedPhrase[i] = '*';
         }
     }
