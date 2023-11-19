@@ -1,5 +1,6 @@
 #include "common_utils.h"
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
@@ -18,3 +19,37 @@ void DieWithError(char *errorMessage) {
     exit(EXIT_FAILURE);
 }
 
+char* EncryptPhrase(char* phrase) {
+    // Turns alphabet to asterisks.
+
+    char* encryptedPhrase;
+    int phraseLength = strlen(phrase);
+    encryptedPhrase = (char*)malloc(phraseLength);
+
+    strcpy(encryptedPhrase, phrase);
+
+    for (int i = 0; i < phraseLength; i++) {
+        if (isalpha(phrase[i])) {
+            encryptedPhrase[i] = '*';
+        }
+    }
+
+    return encryptedPhrase;
+} 
+
+char* CapitalizePhrase(char* phrase) {
+    // returns a capitalized char*
+
+    char* tempPhrase;
+    int phraseLength = strlen(phrase);
+    tempPhrase = (char*)malloc(phraseLength);
+
+    // Copy string to temp variable
+    strcpy(tempPhrase, phrase);
+
+    for (int i = 0; i < phraseLength; i++) {
+        tempPhrase[i] = toupper(tempPhrase[i]);
+    }
+
+    return tempPhrase;
+}
