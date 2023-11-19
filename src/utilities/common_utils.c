@@ -19,10 +19,11 @@ void DieWithError(char *errorMessage) {
     exit(EXIT_FAILURE);
 }
 
-char* EncryptPhrase(char* phrase, int phraseLength) {
+char* EncryptPhrase(char* phrase) {
     // Turns alphabet to asterisks.
 
     char* encryptedPhrase;
+    int phraseLength = strlen(phrase);
     encryptedPhrase = (char*)malloc(phraseLength);
 
     strcpy(encryptedPhrase, phrase);

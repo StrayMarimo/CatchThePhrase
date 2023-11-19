@@ -1,6 +1,7 @@
 #include "sizes.h"
 #include "player.h"
 #include "socket_communication.h"
+#include "common_utils.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,10 +16,9 @@ struct Player CreatePlayer() {
 
 void SetPhrase(struct Player *player, int client_sock) {
     printf("Enter a phrase: ");
-    SendMessage(client_sock, player->player_phrase, true);
+    SendMessage(client_sock, EncryptPhrase(player->player_phrase), true);
     printf("Your opponent will guess the phrase: %s", player->player_phrase);
 }
-
 
 void SetGuessPhrase(struct Player *player, int client_sock) {
     printf("Waiting for opponent to choose a topic...\n");
@@ -29,6 +29,6 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
 
     printf("Opponent Phrase: %s\n", player->opponent_phrase);
 
-    strcpy(player->progress, encryptPhrase(player->opponent_phrase, strlen(player->opponent_phrase)));
+    strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
     printf("Encrypted Phrase: %s\n", player->progress);
 }
