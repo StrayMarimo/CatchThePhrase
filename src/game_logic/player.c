@@ -39,12 +39,29 @@ char* encryptPhrase(char* phrase, int phraseLength) {
     return encryptedPhrase;
 } 
 
+char* CapitalizePhrase(char* phrase) {
+    // returns a capitalized char*
+
+    char* tempPhrase;
+    int phraseLength = strlen(phrase);
+    tempPhrase = (char*)malloc(phraseLength);
+
+    // Copy string to temp variable
+    strcpy(tempPhrase, phrase);
+
+    for (int i = 0; i < phraseLength; i++) {
+        tempPhrase[i] = toupper(tempPhrase[i]);
+    }
+
+    return tempPhrase;
+}
+
 void SetGuessPhrase(struct Player *player, int client_sock) {
     printf("Waiting for opponent to choose a topic...\n");
     char buffer[MAX_STRING_SIZE];
     ReceiveMessage(client_sock, buffer, true);
 
-    strcpy(player->opponent_phrase, buffer);
+    strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
 
     printf("Opponent Phrase: %s\n", player->opponent_phrase);
 
