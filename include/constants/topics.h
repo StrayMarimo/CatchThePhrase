@@ -33,10 +33,10 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
 
     "Musical Instruments",
 
-    "Bestselling Novels"
-    "Mystery and Thriller Novels"
-    "Science Fiction Books"
-    "Classic Literature Books"
+    "Bestselling Novels",
+    "Mystery and Thriller Novels",
+    "Science Fiction Books",
+    "Classic Literature Books",
     "Famous Authors",
 
     "American TV Series",
