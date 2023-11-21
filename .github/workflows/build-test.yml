@@ -1,0 +1,21 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install build dependencies
+      run: sudo apt-get install build-essential
+
+    - name: Test Compilation
+      run: | 
+        chmod +x compile.sh  # make sure the script is executable
+        ./compile.sh  # execute your compile.sh script
