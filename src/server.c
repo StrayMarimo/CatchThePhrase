@@ -10,13 +10,17 @@
 #include "topics.h"
 #include "player.h"
 #include <string.h>
-
+#include <ncurses.h>
 void setupSocketConnection(int *server_sock, int *client_sock, int port);
 char *setupTopic();
 
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
     struct Player player = CreatePlayer();
+
+    initscr();
+    raw();
+    keypad(stdscr, TRUE);
 
     // Setup Connection
     ValidateArgs(argv[0], 2, argc);
@@ -33,6 +37,10 @@ int main(int argc, char *argv[]){
     // Close Connection
     close(client_sock);
     close(server_sock);
+
+    refresh();
+    getch();
+    endwin();
     
     return 0; 
 }
@@ -45,7 +53,7 @@ void setupSocketConnection(int *server_sock, int *client_sock, int port){
     socklen_t client_size = sizeof(client_addr);
     *client_sock = HandleNewConnection(*server_sock, &client_addr, &client_size);
 
-    printf("Connected to Player 2.\n");
+    PrintLine("Connected to Player 2.\n");
     usleep(2000);
     system("clear");   
 }
@@ -55,7 +63,6 @@ char *setupTopic() {
     srand((unsigned) time(&t));
 
     char *topic = topics[rand() % MAX_TOPIC];
-    printf("Your topic: %s\n", topic);
-
+    PrintLine("The chosen topic: %s\n", topic); 
     return topic;
 }

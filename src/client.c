@@ -8,6 +8,7 @@
 #include "common_utils.h"
 #include "player.h"
 #include <string.h>
+#include <ncurses.h>
 
 void setupSocketConnection(int *client_sock, int port, char *host);
 
@@ -16,13 +17,17 @@ int main(int argc,  char *argv[]){
     struct Player player = CreatePlayer();
     char buffer[MAX_STRING_SIZE];
 
+    initscr();
+    raw();
+    keypad(stdscr, TRUE);
+
     // Setup Connection
     ValidateArgs(argv[0], 3, argc);
     setupSocketConnection(&client_sock, atoi(argv[2]), argv[1]);
 
     // Setup Topic
     ReceiveMessage(client_sock, buffer, false);
-    printf("The chosen topic: %s\n", buffer);
+    PrintLine("The chosen topic: %s\n", buffer);
     SendAck(client_sock);
 
     // Setup Phrases
@@ -31,6 +36,10 @@ int main(int argc,  char *argv[]){
 
     // Close Connection
     close(client_sock);
+
+    refresh();
+    getch();
+    endwin();
     return 0;
 }
 
@@ -41,7 +50,7 @@ void setupSocketConnection(int *client_sock, int port, char *host){
     server = FindHost(host);
     EstablishConnection(*client_sock, server, port);
 
-    printf("Connected to Player 1.\n");
+    PrintLine("Connected to Player 1.\n");
     usleep(2000);
     system("clear");
 }
