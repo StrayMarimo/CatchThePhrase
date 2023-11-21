@@ -4,17 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include <ncurses.h>
+#include "common_utils.h"
 void SendMessage(int sock, char *buffer, bool fromInput) {
     int n;
     if (fromInput) {
         bzero(buffer, MAX_STRING_SIZE);
-        fgets(buffer, MAX_STRING_SIZE - 1, stdin);
+        getnstr(buffer, MAX_STRING_SIZE - 1);
     }
 
     n = send(sock, buffer, strlen(buffer), 0);
     if (n < 0) 
-        printf("Error: send() Failed.\n");
+        DieWithError("Error: send() Failed.\n");
 }
 
 void ReceiveMessage(int socket, char* buffer, bool fromInput) {
@@ -24,7 +25,7 @@ void ReceiveMessage(int socket, char* buffer, bool fromInput) {
     
     n = recv(socket, buffer, MAX_STRING_SIZE - 1, 0);
     if (n < 0) 
-        printf("Error: recv() Failed.\n");
+        DieWithError("Error: recv() Failed.\n");
 }
 
 void SendAck(int socket) {

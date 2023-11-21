@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ncurses.h>
 
 
 struct Player CreatePlayer() {
@@ -15,22 +16,20 @@ struct Player CreatePlayer() {
 }
 
 void SetPhrase(struct Player *player, int client_sock) {
-    printf("Enter a phrase: ");
+    PrintLine("Enter a phrase: ");
     SendMessage(client_sock, player->player_phrase, true);
     strcpy(player->player_phrase, CapitalizePhrase(player->player_phrase));
-    printf("Your opponent will guess the phrase: %s", player->player_phrase);
+
+    PrintLine("Your opponent will guess the phrase: %s\n", player->player_phrase);
     strcpy(player->opponent_progress, EncryptPhrase(player->player_phrase));
 }
 
 void SetGuessPhrase(struct Player *player, int client_sock) {
-    printf("Waiting for opponent to choose a topic...\n");
+    PrintLine("Waiting for opponent to set a phrase...\n");
     char buffer[MAX_STRING_SIZE];
     ReceiveMessage(client_sock, buffer, true);
 
     strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
-
-    printf("Opponent Phrase: %s\n", player->opponent_phrase);
-
     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
-    printf("Encrypted Phrase: %s\n", player->progress);
+    PrintLine("Encrypted Phrase: %s\n", player->progress);
 }
