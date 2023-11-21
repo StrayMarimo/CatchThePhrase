@@ -19,6 +19,7 @@ void SetPhrase(struct Player *player, int client_sock) {
     SendMessage(client_sock, player->player_phrase, true);
     strcpy(player->player_phrase, CapitalizePhrase(player->player_phrase));
     printf("Your opponent will guess the phrase: %s", player->player_phrase);
+    strcpy(player->opponent_progress, EncryptPhrase(player->player_phrase));
 }
 
 void SetGuessPhrase(struct Player *player, int client_sock) {
