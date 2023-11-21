@@ -60,7 +60,7 @@ char* CapitalizePhrase(char* phrase) {
 void PrintLine(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    vwprintw(stdscr, format, args);
+    vw_printw(stdscr, format, args);
     va_end(args);
     refresh();
 }
