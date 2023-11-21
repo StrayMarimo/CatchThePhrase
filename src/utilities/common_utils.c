@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
     if (params_expected != params_received) {
