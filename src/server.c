@@ -46,7 +46,7 @@ void setupSocketConnection(int *server_sock, int *client_sock, int port){
     *client_sock = HandleNewConnection(*server_sock, &client_addr, &client_size);
 
     printf("Connected to Player 2.\n");
-    usleep(2000)
+    usleep(2000);
     system("clear");   
 }
 
