@@ -12,6 +12,9 @@
 struct Player CreatePlayer() {
     struct Player player;
     player.score = 100;
+    for(int i = 0; i < 26; i++){
+        player.letters_pressed[i] = 'A' + i;
+    }
     return player;
 }
 
@@ -32,4 +35,16 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
     strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
     PrintLine("Encrypted Phrase: %s\n", player->progress);
+}
+
+bool isLetterPressed(struct Player *player, char letter){
+    for (int i = 0; i < 26; i++){
+        if(letter == player->letters_pressed[i]){
+            player->letters_pressed[i] = '*';
+            return false;
+        } 
+        if(player->letters_pressed[i] == '*'){
+            return true;
+        }
+    }
 }
