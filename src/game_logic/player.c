@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ncurses.h>
+#include "special_chars.h"
 
 
 struct Player CreatePlayer() {
@@ -34,7 +35,8 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
 
     strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
-    PrintLine("Encrypted Phrase: %s\n", player->progress);
+
+    PrintHashedCharacter(player->progress);
 }
 
 bool isLetterPressed(struct Player *player, char letter){
