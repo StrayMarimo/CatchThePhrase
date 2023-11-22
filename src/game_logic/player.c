@@ -45,8 +45,7 @@ bool isLetterPressed(struct Player *player, char letter){
             player->letters_pressed[i] = '*';
             return false;
         } 
-        if(player->letters_pressed[i] == '*'){
-            return true;
-        }
+        
     }
+    return true;
 }
