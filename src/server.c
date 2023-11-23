@@ -17,6 +17,7 @@ char *setupTopic();
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
     struct Player player = CreatePlayer();
+    bool isGuessing = true;
 
     initscr();
     raw();
@@ -33,6 +34,9 @@ int main(int argc, char *argv[]){
     // Setup Phrases
     SetPhrase(&player, client_sock); 
     SetGuessPhrase(&player, client_sock);
+
+    char letter = InputLetter(&player);
+    SetProgress(&player, letter, client_sock);
 
     // Close Connection
     close(client_sock);

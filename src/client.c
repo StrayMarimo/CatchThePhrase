@@ -16,6 +16,7 @@ int main(int argc,  char *argv[]){
     int client_sock;
     struct Player player = CreatePlayer();
     char buffer[MAX_STRING_SIZE];
+    bool isGuessing = false;
 
     initscr();
     raw();
@@ -33,6 +34,8 @@ int main(int argc,  char *argv[]){
     // Setup Phrases
     SetGuessPhrase(&player, client_sock);
     SetPhrase(&player, client_sock);
+
+    SetOpponentProgress(&player, client_sock);
 
     // Close Connection
     close(client_sock);
