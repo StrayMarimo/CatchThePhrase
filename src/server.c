@@ -17,7 +17,8 @@ char *setupTopic();
 int main(int argc, char *argv[]){
     int server_sock, client_sock, port_no, n;
     struct Player player = CreatePlayer();
-
+    bool isGuessing = true;
+    char buffer[MAX_STRING_SIZE];
     initscr();
     raw();
     keypad(stdscr, TRUE);
@@ -33,6 +34,23 @@ int main(int argc, char *argv[]){
     // Setup Phrases
     SetPhrase(&player, client_sock); 
     SetGuessPhrase(&player, client_sock);
+
+    PrintPlayer(player);
+
+    while (player.score > 0) {
+        if (isGuessing) {
+            PrintLine("Your turn to guess.\n");
+            char letter = InputLetter(&player);
+            if (SetProgress(&player, letter, client_sock)) break;
+        } else {
+            PrintLine("Your opponent is guessing.\n");
+            ReceiveMessage(client_sock, buffer, false);
+            if (SetOpponentProgress(&player, *buffer, client_sock)) break;
+        }
+        isGuessing = !isGuessing;
+        PrintLine("\n");
+
+    }
 
     // Close Connection
     close(client_sock);

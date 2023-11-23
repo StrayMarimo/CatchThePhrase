@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ncurses.h>
+#include <ctype.h>
+#include "special_chars.h"
 
 
 struct Player CreatePlayer() {
@@ -16,6 +18,19 @@ struct Player CreatePlayer() {
         player.letters_pressed[i] = 'A' + i;
     }
     return player;
+}
+
+void PrintPlayer(struct Player player) {
+    PrintLine("Score: %d\n", player.score);
+    PrintLine("Phrase: %s\n", player.player_phrase);
+    PrintLine("Opponent Phrase: %s\n", player.opponent_phrase);
+    PrintLine("Progress: %s\n", player.progress);
+    PrintLine("Opponent Progress: %s\n\n", player.opponent_progress);
+    PrintLine("Letters Pressed: ");
+    for(int i = 0; i < 26; i++){
+        PrintLine("%c ", player.letters_pressed[i]);
+    }
+    PrintLine("\n");
 }
 
 void SetPhrase(struct Player *player, int client_sock) {
@@ -34,17 +49,92 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
 
     strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
-    PrintLine("Encrypted Phrase: %s\n", player->progress);
+    PrintHashedCharacter(player->progress);
+}
+
+char InputLetter(struct Player *player) {
+    PrintLine("Guess a Letter: ");
+    char letter = getch();
+    PrintLine("\n");
+    if (isLetterPressed(player, letter))
+        PrintLine("\nYou have already pressed that letter.\n");
+    return letter;
 }
 
 bool isLetterPressed(struct Player *player, char letter){
     for (int i = 0; i < 26; i++){
-        if(letter == player->letters_pressed[i]){
+        if(toupper(letter) == player->letters_pressed[i]){
             player->letters_pressed[i] = '*';
             return false;
         } 
-        if(player->letters_pressed[i] == '*'){
-            return true;
+        
+    }
+    return true;
+}
+
+bool IsPhraseGuessed(char *phrase, char *progress){
+    for (int i = 0; i < strlen(phrase); i++){
+        if(toupper(phrase[i]) != toupper(progress[i])){
+            return false;
+        } 
+    }
+    return true;
+}
+
+bool SetOpponentProgress(struct Player *player, char letter, int client_sock) {
+    bool isLetterInPhrase = false;
+
+    for(int i = 0; i < strlen(player->player_phrase); i++){
+        if(toupper(letter) == player->player_phrase[i]){
+            player->opponent_progress[i] = letter;
+            isLetterInPhrase = true;
         }
     }
+    if (!isLetterInPhrase) {
+        PrintLine("Your opponent guessed a letter not in the phrase.\n");
+    }
+    
+    PrintLine("Opponent Progress: ");
+    PrintHashedCharacter(player->opponent_progress);
+    
+    if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
+        PrintLine("Your opponent guessed the phrase!\n");
+
+        return true;
+    }
+
+    return false;
 }
+
+bool SetProgress(struct Player *player, char letter, int client_sock) {
+    bool isLetterInPhrase = false;
+
+    for(int i = 0; i < 26; i++)
+        PrintLine("%c ", player->letters_pressed[i]);
+    PrintLine("\n");
+
+    for (int i = 0; i < strlen(player->opponent_phrase); i++) {
+        if (toupper(letter) == player->opponent_phrase[i]) {
+            isLetterInPhrase = true;
+            player->progress[i] = letter;
+        }
+    }
+
+    if (!isLetterInPhrase) {
+        player->score -= 10;
+        PrintLine("Letter not in phrase. Score: %d\n", player->score);
+    }
+
+    PrintLine("Your Progress: ");
+    PrintHashedCharacter(player->progress);
+
+    if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
+        PrintLine("You guessed the phrase!\n");
+        SendMessage(client_sock, &letter, false);
+        return true;
+    }
+
+    SendMessage(client_sock, &letter, false);
+    return false;
+}
+
