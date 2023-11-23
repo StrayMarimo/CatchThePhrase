@@ -56,8 +56,11 @@ char InputLetter(struct Player *player) {
     PrintLine("Guess a Letter: ");
     char letter = getch();
     PrintLine("\n");
-    if (isLetterPressed(player, letter))
-        PrintLine("\nYou have already pressed that letter.\n");
+    while (isLetterPressed(player, letter)) {
+        PrintLine("\nYou have already pressed that letter. Guess again: ");
+        letter = getch();
+        PrintLine("\n"); 
+    }
     return letter;
 }
 
