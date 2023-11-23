@@ -12,10 +12,11 @@ struct Player {
 };
 
 struct Player CreatePlayer();
+void PrintPlayer(struct Player player);
 void SetPhrase(struct Player *player, int client_sock);
 void SetGuessPhrase(struct Player *player, int client_sock);
 char InputLetter(struct Player *player);
 bool isLetterPressed(struct Player *player, char letter);
-bool SetOpponentProgress(struct Player *player, int client_sock);
+bool SetOpponentProgress(struct Player *player, char letter, int client_sock);
 bool SetProgress(struct Player *player, char letter, int client_sock);
 #endif

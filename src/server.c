@@ -35,6 +35,8 @@ int main(int argc, char *argv[]){
     SetPhrase(&player, client_sock); 
     SetGuessPhrase(&player, client_sock);
 
+    PrintPlayer(player);
+
     char letter = InputLetter(&player);
     SetProgress(&player, letter, client_sock);
 

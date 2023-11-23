@@ -35,7 +35,11 @@ int main(int argc,  char *argv[]){
     SetGuessPhrase(&player, client_sock);
     SetPhrase(&player, client_sock);
 
-    SetOpponentProgress(&player, client_sock);
+
+    PrintPlayer(player);
+
+    ReceiveMessage(client_sock, buffer, false);
+    SetOpponentProgress(&player, *buffer, client_sock);
 
     // Close Connection
     close(client_sock);
