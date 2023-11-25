@@ -2,20 +2,22 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ncurses.h>
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
     if (params_expected != params_received) {
         if (params_expected == 2) 
-            printf("Usage: %s port_no\n", file);
+            PrintLine("Usage: %s port_no\n", file);
         else if (params_expected == 3) {
-            printf("Usage: %s hostname port_no\n", file);
+            PrintLine("Usage: %s hostname port_no\n", file);
         DieWithError("Invalid number of arguments.");
         }
     }
 }
 
 void DieWithError(char *errorMessage) {
-    perror(errorMessage);
+    PrintLine(errorMessage);
     exit(EXIT_FAILURE);
 }
 
@@ -52,4 +54,13 @@ char* CapitalizePhrase(char* phrase) {
     }
 
     return tempPhrase;
+}
+
+
+void PrintLine(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    vw_printw(stdscr, format, args);
+    va_end(args);
+    refresh();
 }

@@ -1,0 +1,24 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install build dependencies
+      run: sudo apt-get install build-essential libncurses5-dev libncursesw5-dev
+
+    - name: Test Compilation
+      run: | 
+        chmod +x compile.sh  # make sure the script is executable
+        ./compile.sh  # execute your compile.sh script
