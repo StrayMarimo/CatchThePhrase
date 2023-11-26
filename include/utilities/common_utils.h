@@ -6,4 +6,5 @@ void DieWithError(char *errorMessage);
 char* EncryptPhrase(char* phrase);
 char* CapitalizePhrase(char* phrase);
 void PrintLine(const char *format, ...);
+void PrintFile(const char* filename);
 #endif

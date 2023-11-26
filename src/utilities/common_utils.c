@@ -64,3 +64,20 @@ void PrintLine(const char *format, ...) {
     va_end(args);
     refresh();
 }
+
+
+void PrintFile(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        PrintLine("Failed to open file: %s\n", filename);
+        return;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        PrintLine("%s", line);
+    }
+
+    fclose(file);
+
+}
