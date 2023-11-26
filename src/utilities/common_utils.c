@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <ncurses.h>
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
@@ -26,12 +27,24 @@ char* EncryptPhrase(char* phrase) {
 
     char* encryptedPhrase;
     int phraseLength = strlen(phrase);
+    int markedSpots = phraseLength/4;
     encryptedPhrase = (char*)malloc(phraseLength);
 
     strcpy(encryptedPhrase, phrase);
-
+    
+    int ctr = 0;
+    time_t t;
+    srand((unsigned) time(&t));
+    while(ctr < markedSpots){
+        int i = rand() % phraseLength;
+        if(encryptedPhrase[i] != '^'){
+            encryptedPhrase[i] = '^';
+            ctr++;
+        }
+        PrintLine("added marked spot");
+    }
     for (int i = 0; i < phraseLength; i++) {
-        if (isalpha(phrase[i])) {
+        if (isalpha(phrase[i]) && encryptedPhrase[i] != '^') {
             encryptedPhrase[i] = '*';
         }
     }
