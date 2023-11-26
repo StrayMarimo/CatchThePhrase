@@ -2,23 +2,33 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <ncurses.h>
+#include "draw_box.h"
+#include "sizes.h"
+
 
 void ValidateArgs(char *file, int params_expected, int params_received) {
+    char error_message[MAX_STRING_SIZE];
     if (params_expected != params_received) {
         if (params_expected == 2) 
-            PrintLine("Usage: %s port_no\n", file);
-        else if (params_expected == 3) {
-            PrintLine("Usage: %s hostname port_no\n", file);
-        DieWithError("Invalid number of arguments.");
-        }
+            sprintf(error_message, "Usage: %s port_no", file);
+        else if (params_expected == 3)
+            sprintf(error_message, "Usage: %s hostname port_no", file);
+        
+        PrintSysMessage(0, error_message);
+        napms(2000);
+        PrintSysMessage(1, error_message);
+        DieWithError(0, "Invalid number of arguments.");
     }
 }
 
-void DieWithError(char *errorMessage) {
-    PrintLine(errorMessage);
+void DieWithError(int line, char *errorMessage) {
+    PrintSysMessage(line, errorMessage);
+    getch();
+    system("clear");
     exit(EXIT_FAILURE);
 }
 
@@ -78,6 +88,27 @@ void PrintLine(const char *format, ...) {
     refresh();
 }
 
+void PrintSysMessage(int line, const char *format, ...) {
+    int row = 42, col = 4;
+    row = row - line;
+    
+    move(row, col);
+    va_list args;
+    va_start(args, format);
+
+    for (int i = 0; i < 70; i++){
+        printw(" ");
+        refresh();
+    }
+
+    move(row, col);
+    printw("sys msg > ");
+    refresh();
+    vw_printw(stdscr, format, args);
+    va_end(args);
+    refresh();
+}
+
 
 void PrintFile(const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -85,12 +116,22 @@ void PrintFile(const char* filename) {
         PrintLine("Failed to open file: %s\n", filename);
         return;
     }
-
+    int col = 2, row = 2;
     char line[256];
     while (fgets(line, sizeof(line), file)) {
+        line[strcspn(line, "\n")] = '\0';
+        move(row, col);
         PrintLine("%s", line);
+        row++;
     }
 
     fclose(file);
+
+    DrawBox(90, 12);
+    getyx(stdscr, row, col);
+    row -= 11;
+    col++;
+    move(row, col);
+    DrawBox(30, 12); 
 
 }
