@@ -9,23 +9,38 @@
 #include "common_utils.h"
 #include "topics.h"
 #include "player.h"
+#include "draw_box.h"
 #include <string.h>
 #include <ncurses.h>
+
 void setupSocketConnection(int *server_sock, int *client_sock, int port);
 char *setupTopic();
 
 int main(int argc, char *argv[]){
+    initscr();
+    int rows = 125;
+    int cols = 125;
+    resize_term(rows, cols);
     int server_sock, client_sock, port_no, n;
-    struct Player player = CreatePlayer();
+   
     bool isGuessing = true;
     char buffer[MAX_STRING_SIZE];
-    initscr();
     raw();
     keypad(stdscr, TRUE);
+
+    // Draw a box around the terminal window
+    box(stdscr, 0, 0);
+
+    // Refresh the screen
+    refresh();
+
+    PrintFile("assets/title.txt");
 
     // Setup Connection
     ValidateArgs(argv[0], 2, argc);
     setupSocketConnection(&server_sock, &client_sock, atoi(argv[1]));
+
+    struct Player player = CreatePlayer();
 
     // Setup Topic
     SendMessage(client_sock, setupTopic(), false);
@@ -49,7 +64,6 @@ int main(int argc, char *argv[]){
         }
         isGuessing = !isGuessing;
         PrintLine("\n");
-
     }
 
     // Close Connection
@@ -71,8 +85,17 @@ void setupSocketConnection(int *server_sock, int *client_sock, int port){
     socklen_t client_size = sizeof(client_addr);
     *client_sock = HandleNewConnection(*server_sock, &client_addr, &client_size);
 
-    PrintLine("Connected to Player 2.\n");
-    usleep(2000);
+    napms(500);
+    PrintSysMessage(2, "Creating socket...");
+    PrintSysMessage(1, "Socket created and listening to port.");
+    PrintSysMessage(0, "Connected to Player 2.");
+    napms(500);
+
+    PrintSysMessage(3, "Creating socket...");
+    PrintSysMessage(2, "Socket created and listening to port.");
+    PrintSysMessage(1, "Connected to Player 2.");
+    PrintSysMessage(0, "Press any key to continue...");
+    getch();
     system("clear");   
 }
 

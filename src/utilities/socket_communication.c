@@ -15,7 +15,7 @@ void SendMessage(int sock, char *buffer, bool fromInput) {
 
     n = send(sock, buffer, strlen(buffer), 0);
     if (n < 0) 
-        DieWithError("Error: send() Failed.\n");
+        DieWithError(0, "Error: send() Failed.\n");
 }
 
 void ReceiveMessage(int socket, char* buffer, bool fromInput) {
@@ -25,7 +25,7 @@ void ReceiveMessage(int socket, char* buffer, bool fromInput) {
     
     n = recv(socket, buffer, MAX_STRING_SIZE - 1, 0);
     if (n < 0) 
-        DieWithError("Error: recv() Failed.\n");
+        DieWithError(0, "Error: recv() Failed.\n");
 }
 
 void SendAck(int socket) {

@@ -13,22 +13,36 @@
 void setupSocketConnection(int *client_sock, int port, char *host);
 
 int main(int argc,  char *argv[]){
+
+    initscr();
+    int rows = 125;
+    int cols = 125;
+    resize_term(rows, cols);
+
     int client_sock;
-    struct Player player = CreatePlayer();
     char buffer[MAX_STRING_SIZE];
     bool isGuessing = false;
 
-    initscr();
     raw();
     keypad(stdscr, TRUE);
+
+    // Draw a box around the terminal window
+    box(stdscr, 0, 0);
+
+    // Refresh the screen
+    refresh();
+
+    PrintFile("assets/title.txt");
 
     // Setup Connection
     ValidateArgs(argv[0], 3, argc);
     setupSocketConnection(&client_sock, atoi(argv[2]), argv[1]);
 
+    struct Player player = CreatePlayer();
+
     // Setup Topic
     ReceiveMessage(client_sock, buffer, false);
-    PrintLine("The chosen topic: %s\n", buffer);
+    // PrintLine("The chosen topic: %s\n", buffer);
     SendAck(client_sock);
 
     // Setup Phrases
@@ -39,16 +53,16 @@ int main(int argc,  char *argv[]){
 
     while (player.score > 0) {
         if (isGuessing) {
-            PrintLine("Your turn to guess.\n");
+            // PrintLine("Your turn to guess.\n");
             char letter = InputLetter(&player);
             if (SetProgress(&player, letter, client_sock)) break;
         } else {
-            PrintLine("Your opponent is guessing.\n");
+            // PrintLine("Your opponent is guessing.\n");
             ReceiveMessage(client_sock, buffer, false);
             if (SetOpponentProgress(&player, *buffer, client_sock)) break;
         }
         isGuessing = !isGuessing;
-        PrintLine("\n");
+        // PrintLine("\n");
     }
 
     // Close Connection
@@ -67,7 +81,10 @@ void setupSocketConnection(int *client_sock, int port, char *host){
     server = FindHost(host);
     EstablishConnection(*client_sock, server, port);
 
-    PrintLine("Connected to Player 1.\n");
-    usleep(2000);
+    napms(500);
+    PrintSysMessage(2, "Creating socket...");
+    PrintSysMessage(1, "Connected to Player 1.");
+    PrintSysMessage(0, "Press any key to continue...");
+    getch();
     system("clear");
 }
