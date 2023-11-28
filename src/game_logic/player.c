@@ -164,6 +164,7 @@ void RevealNotPresentLetter(struct Player *player){
             }
         }
     }
+}
 
 char RevealALetter(struct Player *player){
     char lettterToReveal;
