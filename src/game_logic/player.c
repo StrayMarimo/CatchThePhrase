@@ -142,6 +142,30 @@ bool SetProgress(struct Player *player, char letter, int client_sock) {
     return false;
 }
 
+void RevealNotPresentLetter(struct Player *player){
+    bool isRevealed = false;
+    while(!isRevealed){
+        char randomletter = 'A' + (rand() % 26);
+        bool isPresent = false;
+        // find if letter is not in phrase
+        for(int i = 0; strlen(player->opponent_phrase); i++){
+            if(randomletter == player->opponent_phrase[i]){
+                isPresent = true;
+                break;
+            }
+        }
+        if(!isPresent){
+            for(int i = 0; i < 26; i++){
+                if(player->letters_pressed == randomletter){
+                    player->letters_pressed[i] = randomletter;
+                    isRevealed = true;
+                    break;
+                }
+            }
+        }
+    }
+}
+
 char RevealALetter(struct Player *player){
     char lettterToReveal;
     time_t t;
@@ -154,4 +178,5 @@ char RevealALetter(struct Player *player){
             isDone = true;
     }
     return lettterToReveal;
+
 }
