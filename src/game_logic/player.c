@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <ncurses.h>
 #include <ctype.h>
+#include <time.h>
 #include "special_chars.h"
 
 
@@ -141,3 +142,16 @@ bool SetProgress(struct Player *player, char letter, int client_sock) {
     return false;
 }
 
+char RevealALetter(struct Player *player){
+    char lettterToReveal;
+    time_t t;
+    srand((unsigned) time (&t));
+    bool isDone = false;
+    while(!isDone){
+        int i = rand() % strlen(player->opponent_phrase);
+        if(player->progress[i] != player->opponent_phrase[i])
+            lettterToReveal = player->opponent_phrase[i];
+            isDone = true;
+    }
+    return lettterToReveal;
+}
