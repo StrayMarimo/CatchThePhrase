@@ -180,3 +180,21 @@ char RevealALetter(struct Player *player){
     return lettterToReveal;
 
 }
+
+bool CheckThreeInARow(struct Player *player) {
+    static int consecutiveCorrectGuesses = 0;
+
+    if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
+        consecutiveCorrectGuesses = 0;
+    } else {
+        consecutiveCorrectGuesses++;
+        if (consecutiveCorrectGuesses == 3) {
+            
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
