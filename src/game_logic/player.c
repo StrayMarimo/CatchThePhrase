@@ -156,7 +156,7 @@ void RevealNotPresentLetter(struct Player *player){
         }
         if(!isPresent){
             for(int i = 0; i < 26; i++){
-                if(player->letters_pressed == randomletter){
+                if(player->letters_pressed[i] == randomletter){
                     player->letters_pressed[i] = randomletter;
                     isRevealed = true;
                     break;
