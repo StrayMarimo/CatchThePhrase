@@ -85,6 +85,15 @@ bool IsPhraseGuessed(char *phrase, char *progress){
     return true;
 }
 
+bool IsMarkedSpot(char* phrase, char* progress, char letter) {
+    for (int i = 0; i < strlen(phrase); i++) {
+        if (toupper(letter) == phrase[i] && progress[i] == '^') {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool SetOpponentProgress(struct Player *player, char letter, int client_sock) {
     bool isLetterInPhrase = false;
 
@@ -122,6 +131,10 @@ bool SetProgress(struct Player *player, char letter, int client_sock) {
             isLetterInPhrase = true;
             player->progress[i] = letter;
         }
+    }
+
+     if (IsMarkedSpot(player->opponent_phrase, player->progress, letter)) {
+        PrintLine("You guessed a marked spot!\n");
     }
 
     if (!isLetterInPhrase) {
