@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     int server_sock, client_sock;
     int letterCount = 0;
     bool is_topic_set = false, is_phrase_set = false;
-    char *topic;
+    char topic[MAX_STRING_SIZE];
 
      // Setup Connection
     ValidateArgs(argv[0], 2, argc);
@@ -51,13 +51,12 @@ int main(int argc, char *argv[]) {
                 // framesCounter = 0;
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
 
-                if (!is_topic_set) {
+                if (strlen(topic) == 0){
                     strcpy(system_message, "System Message> The chosen topic is: ");
-                    topic = setupTopic();
+                    strcpy(topic, setupTopic());
                     strcat(system_message, topic);
-                    is_topic_set = true;
-                    // SendMessage(client_sock, setupTopic());
-                    // ReceiveAck(client_sock);
+                    SendMessage(client_sock, setupTopic());
+                    ReceiveAck(client_sock);
                 }
                 // if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
                 // else mouseOnText = false;

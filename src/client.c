@@ -20,7 +20,6 @@ void setupSocketConnection(int *client_sock, int port, char *host);
 int main(int argc,  char *argv[]){
     int framesCounter = 0;
     int client_sock;
-    bool is_topic_set = false;
     char buffer[MAX_STRING_SIZE];
     char topic[MAX_STRING_SIZE];
     bool isGuessing = false;
@@ -43,11 +42,12 @@ int main(int argc,  char *argv[]){
             case GAMEPLAY:
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
 
-                if (is_topic_set == false) {
+                if (strlen(topic) == 0) {
+                    strcpy(system_message, "System Message> The chosen topic is: ");
+                    strcat(system_message, topic);
                     ReceiveMessage(client_sock, topic);
-                    // strcpy(system_message, buffer);
                     SendAck(client_sock);
-                    is_topic_set = true;
+                   
                 }
                 break;
             default:
