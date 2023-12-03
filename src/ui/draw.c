@@ -1,5 +1,6 @@
 
 #include "draw.h"
+#include "stdio.h"
 
 void DrawGameLayout() {
     DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
@@ -11,25 +12,28 @@ void DrawGameLayout() {
     DrawLine(30, 461, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 461, BLACK);
 }
 
-// void DrawLettersPressed(char *lettersPressed) {
-//     const float boxWidth = 40.0f;
-//     const float boxHeight = 40.0f;
-//     const float horizontalSpacing = 20.0f;
-//     const float verticalSpacing = 20.0f;
-//     const int charsPerRow = 9;
+void DrawLettersPressed(char *lettersPressed, int offset) {
+    const float boxWidth = 35.0f;
+    const float boxHeight = 25.0f;
+    const float horizontalSpacing = 10.0f;
+    const float verticalSpacing = 5.0f;
+    const int charsPerRow = 9;
 
-//     // Draw array in a box with 3 rows
-//     for (int i = 0; i < 26; ++i) {
-//         int row = i / charsPerRow;
-//         int col = i % charsPerRow;
+    for (int i = 0; i < 26; ++i) {
+        int row = i / charsPerRow;
+        int col = i % charsPerRow;
 
-//         float xPos = col * (boxWidth + horizontalSpacing) + 50;
-//         float yPos = row * (boxHeight + verticalSpacing) + 50;
+        float xPos = col * (boxWidth + horizontalSpacing) + offset;
+        float yPos = row * (boxHeight + verticalSpacing) + 150;
 
-//         DrawRectangle(xPos, yPos, boxWidth, boxHeight, LIGHTGRAY);
-//         DrawText(&lettersPressed[i], (int)(xPos + 0.5 * (boxWidth - MeasureText(&lettersPressed[i], 20))), (int)(yPos + 0.5 * (boxHeight - 20)), 20, BLACK);
-//     }
-// }
+        char charBuffer[2] = { lettersPressed[i], '\0' };
+        char formattedText[26];
+        sprintf(formattedText, "%s", charBuffer);
+        DrawRectangle(xPos, yPos, boxWidth, boxHeight, LIGHTGRAY);
+        DrawText(formattedText, xPos + 15, yPos + 5, 20, BLACK);
+    }
+}
+
 
 void DrawTopic(char *topic) {
     DrawText(topic, 30, 480, 20, MAROON);

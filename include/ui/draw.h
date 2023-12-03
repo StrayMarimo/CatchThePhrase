@@ -5,7 +5,7 @@
 #define DRAW_H
 
 void DrawGameLayout();
-void DrawLettersPressed(char *letters_pressed);
+void DrawLettersPressed(char *letters_pressed, int offset);
 void DrawHealthBar(int currentHealth, int x, int y);
 void DrawTopic(char *topic);
 

@@ -130,6 +130,8 @@ int main(int argc, char *argv[]) {
                 DrawText(system_message3, 30, 380, 10, BLACK);
                 DrawText(system_message2, 30, 400, 10, BLACK);
                 DrawText(system_message, 30, 420, 10, MAROON);
+                DrawLettersPressed(player.letters_pressed, 50);
+                DrawLettersPressed(player.opponent_letters_pressed, 520);
 
                 // // INPUT BOX
                 // DrawRectangleRec(textBox, LIGHTGRAY);

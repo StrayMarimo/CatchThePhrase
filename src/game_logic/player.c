@@ -4,7 +4,7 @@
 // #include "socket_communication.h"
 // #include "common_utils.h"
 // #include <string.h>
-// #include <stdio.h>
+#include <stdio.h>
 // #include <stdlib.h>
 // #include <stdbool.h>
 // #include <ncurses.h>
@@ -19,23 +19,29 @@ struct Player CreatePlayer() {
     player.opponent_score = 100;
     for(int i = 0; i < 26; i++){
         player.letters_pressed[i] = 'A' + i;
-        // player.opponent_letters_pressed[i] = 'A' + i;
+        player.opponent_letters_pressed[i] = 'A' + i;
     }
+
     return player;
 }
 
-// void PrintPlayer(struct Player player) {
-//     PrintLine("Score: %d\n", player.score);
-//     PrintLine("Phrase: %s\n", player.player_phrase);
-//     PrintLine("Opponent Phrase: %s\n", player.opponent_phrase);
-//     PrintLine("Progress: %s\n", player.progress);
-//     PrintLine("Opponent Progress: %s\n\n", player.opponent_progress);
-//     PrintLine("Letters Pressed: ");
-//     for(int i = 0; i < 26; i++){
-//         PrintLine("%c ", player.letters_pressed[i]);
-//     }
-//     PrintLine("\n");
-// }
+void PrintPlayer(struct Player player) {
+    printf("Score: %d\n", player.score);
+    // PrintLine("Phrase: %s\n", player.player_phrase);
+    // PrintLine("Opponent Phrase: %s\n", player.opponent_phrase);
+    // PrintLine("Progress: %s\n", player.progress);
+    // PrintLine("Opponent Progress: %s\n\n", player.opponent_progress);
+    printf("Letters Pressed: ");
+    for(int i = 0; i < 26; i++){
+        printf("%c ", player.letters_pressed[i]);
+    }
+
+    printf("Letters Pressed Opponent: ");
+    for(int i = 0; i < 26; i++){
+        printf("%c ", player.opponent_letters_pressed[i]);
+    }
+    printf("\n");
+}
 
 // void SetPhrase(struct Player *player, int client_sock) {
 

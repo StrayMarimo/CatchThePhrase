@@ -44,10 +44,9 @@ int main(int argc,  char *argv[]){
 
                 if (strlen(topic) == 0) {
                     strcpy(system_message, "System Message> The chosen topic is: ");
-                    strcat(system_message, topic);
                     ReceiveMessage(client_sock, topic);
+                    strcat(system_message, topic);
                     SendAck(client_sock);
-                   
                 }
                 break;
             default:
@@ -70,6 +69,8 @@ int main(int argc,  char *argv[]){
                 DrawHealthBar(player.score, 30, SCREEN_HEIGHT / 2);
                 DrawHealthBar(player.opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
                 DrawTopic(topic);
+                DrawLettersPressed(player.letters_pressed, 50);
+                DrawLettersPressed(player.opponent_letters_pressed, 520);
                 break;
             default:
                 break;

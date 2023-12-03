@@ -12,11 +12,11 @@ struct Player {
     char progress[MAX_STRING_SIZE];
     char opponent_progress[MAX_STRING_SIZE];
     char letters_pressed[26];
-    // char opponent_letters_pressed[26];
+    char opponent_letters_pressed[26];
 };
 
 struct Player CreatePlayer();
-// void PrintPlayer(struct Player player);
+void PrintPlayer(struct Player player);
 // void SetPhrase(struct Player *player, int client_sock);
 // void SetGuessPhrase(struct Player *player, int client_sock);
 // char InputLetter(struct Player *player);
