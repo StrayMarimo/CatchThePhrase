@@ -16,7 +16,7 @@
 struct Player CreatePlayer() {
     struct Player player;
     player.score = 100;
-    // player.opponent_score = 100;
+    player.opponent_score = 100;
     for(int i = 0; i < 26; i++){
         player.letters_pressed[i] = 'A' + i;
         // player.opponent_letters_pressed[i] = 'A' + i;

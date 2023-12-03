@@ -24,7 +24,7 @@ int main(int argc,  char *argv[]){
     char buffer[MAX_STRING_SIZE];
     char topic[MAX_STRING_SIZE];
     bool isGuessing = false;
-    // struct Player player = CreatePlayer();
+    struct Player player = CreatePlayer();
 
     // Setup Connection
     ValidateArgs(argv[0], 3, argc);
@@ -67,7 +67,8 @@ int main(int argc,  char *argv[]){
                 DrawText(system_message3, 30, 380, 10, BLACK);
                 DrawText(system_message2, 30, 400, 10, BLACK);
                 DrawText(system_message, 30, 420, 10, MAROON);
-                // DrawHealthBar(player.score);
+                DrawHealthBar(player.score, 30, SCREEN_HEIGHT / 2);
+                DrawHealthBar(player.opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
                 DrawTopic(topic);
                 break;
             default:

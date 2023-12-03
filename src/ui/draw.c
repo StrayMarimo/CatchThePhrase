@@ -35,17 +35,15 @@ void DrawTopic(char *topic) {
     DrawText(topic, 30, 480, 20, MAROON);
 }
 
-void DrawHealthBar(int currentHealth) {
+void DrawHealthBar(int currentHealth, int x, int y) {
 
     // Draw health bar background
-    DrawRectangle(30, SCREEN_HEIGHT / 2,
-                HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, GRAY);
+    DrawRectangle(x, y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, GRAY);
 
     // Draw health bar
     float healthPercentage = (float)currentHealth / MAX_HEALTH;
     float currentHealthWidth = HEALTH_BAR_WIDTH * healthPercentage;
 
-    DrawRectangle(30, SCREEN_HEIGHT / 2,
-                currentHealthWidth, HEALTH_BAR_HEIGHT, GREEN);
+    DrawRectangle(x, y, currentHealthWidth, HEALTH_BAR_HEIGHT, GREEN);
 
 }

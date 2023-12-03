@@ -6,7 +6,7 @@
 
 void DrawGameLayout();
 void DrawLettersPressed(char *letters_pressed);
-void DrawHealthBar(int currentHealth);
+void DrawHealthBar(int currentHealth, int x, int y);
 void DrawTopic(char *topic);
 
 #endif

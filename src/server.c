@@ -126,7 +126,8 @@ int main(int argc, char *argv[]) {
 
                 DrawGameLayout();
                 DrawTopic(topic);
-                // DrawHealthBar(player.score);
+                DrawHealthBar(player.score, 30, SCREEN_HEIGHT / 2);
+                DrawHealthBar(player.opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
                 DrawText(system_message3, 30, 380, 10, BLACK);
                 DrawText(system_message2, 30, 400, 10, BLACK);
                 DrawText(system_message, 30, 420, 10, MAROON);

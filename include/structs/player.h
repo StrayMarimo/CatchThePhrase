@@ -6,7 +6,7 @@
 // extern char system_message[MAX_STRING_SIZE];
 struct Player {
     int score;
-    // int opponent_score;
+    int opponent_score;
     char player_phrase[MAX_STRING_SIZE];
     char opponent_phrase[MAX_STRING_SIZE];
     char progress[MAX_STRING_SIZE];
