@@ -22,10 +22,10 @@ SRC_FILES="
     ${ROOT_SRC}ui/*.c
 "
 # compile
-gcc $INCLUDE_DIRS -o src/server $SERVER_FILE $SRC_FILES -lncurses \
+gcc $INCLUDE_DIRS -o src/server $SERVER_FILE $SRC_FILES -lraylib \
     || { echo 'Server compilation failed'; exit 1; }
 echo "Server compiled successfully!"
 
-gcc $INCLUDE_DIRS -o src/client $CLIENT_FILE $SRC_FILES -lncurses \
+gcc $INCLUDE_DIRS -o src/client $CLIENT_FILE $SRC_FILES -lraylib \
     || { echo 'Client compilation failed'; exit 1; }
 echo "Client compiled successfully!"
