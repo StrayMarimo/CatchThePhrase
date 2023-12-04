@@ -93,58 +93,34 @@ void GetInput(int *letterCount, char *phraseBuffer) {
     }
 }
 
-// void PrintLine(const char *format, ...) {
-//     va_list args;
-//     va_start(args, format);
-//     vw_printw(stdscr, format, args);
-//     va_end(args);
-//     refresh();
-// }
 
-// void PrintSysMessage(int line, const char *format, ...) {
-//     int row = 42, col = 4;
-//     row = row - line;
-    
-//     move(row, col);
-//     va_list args;
-//     va_start(args, format);
+void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, bool *is_setting_phrase, bool *is_receiving_phrase, int *framesCounter, bool *mouseOnText, int client_sock, struct Player *player) {
+    SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    GetInput(letterCount, phraseBuffer);
 
-//     for (int i = 0; i < 70; i++){
-//         printw(" ");
-//         refresh();
-//     }
+    if (IsKeyPressed(KEY_BACKSPACE)) {
+        (*letterCount)--;
+        if (*letterCount < 0) *letterCount = 0;
+        phraseBuffer[*letterCount] = '\0';
+    }
 
-//     move(row, col);
-//     printw("sys msg > ");
-//     refresh();
-//     vw_printw(stdscr, format, args);
-//     va_end(args);
-//     refresh();
-// }
+    if (IsKeyPressed(KEY_ENTER)) {
+        strcpy(player->player_phrase, phraseBuffer);
+        char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
+        strcat(new_message, CapitalizePhrase(player->player_phrase));
+        AddSystemMessage(new_message);
+        ClearInputBox(phraseBuffer);
+        *is_setting_phrase = false;
+        *is_receiving_phrase = true;
+        *framesCounter = 0;
+        *mouseOnText = false;
+        AddSystemMessage(WAITING_FOR_PHRASE);
+        SetPhrase(player, client_sock);
+    }
+}
 
 
-// void PrintFile(const char* filename) {
-//     FILE* file = fopen(filename, "r");
-//     if (file == NULL) {
-//         PrintLine("Failed to open file: %s\n", filename);
-//         return;
-//     }
-//     int col = 2, row = 2;
-//     char line[256];
-//     while (fgets(line, sizeof(line), file)) {
-//         line[strcspn(line, "\n")] = '\0';
-//         move(row, col);
-//         PrintLine("%s", line);
-//         row++;
-//     }
-
-//     fclose(file);
-
-//     DrawBox(90, 12);
-//     getyx(stdscr, row, col);
-//     row -= 11;
-//     col++;
-//     move(row, col);
-//     DrawBox(30, 12); 
-
-// }
+void ToggleFlags(bool* flag1, bool* flag2) {
+    *flag1 = false;
+    *flag2 = true;
+}

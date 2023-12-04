@@ -15,8 +15,7 @@
 char system_message[MAX_STRING_SIZE];
 char system_message2[MAX_STRING_SIZE];
 char system_message3[MAX_STRING_SIZE];
-char phraseBuffer[MAX_STRING_SIZE] = "\0";
-int letterCount = 0;
+
 
 typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen;
 void setupSocketConnection(int *client_sock, int port, char *host);
@@ -27,7 +26,12 @@ int main(int argc,  char *argv[]){
     int client_sock;
     char buffer[MAX_STRING_SIZE];
     char topic[MAX_STRING_SIZE];
+    char phraseBuffer[MAX_STRING_SIZE] = "\0";
+    int letterCount = 0;
     bool isGuessing = false;
+    bool is_receiving_phrase = false;
+    bool is_receiving_topic = true;
+    bool is_setting_phrase = false;
     struct Player player = CreatePlayer();
 
     // Setup Connection
@@ -44,33 +48,34 @@ int main(int argc,  char *argv[]){
     while (!WindowShouldClose()) {
         switch (currentScreen) {
             case TITLE:
-                if (IsKeyPressed(KEY_ENTER)) currentScreen = GAMEPLAY;
+                if (IsKeyPressed(KEY_ENTER)) {
+                    currentScreen = GAMEPLAY;
+                    getTopic(client_sock, topic); 
+                }
                 break;
             case GAMEPLAY:
+                // Listen to ESC button
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
-                if (strlen(topic) == 0) getTopic(client_sock, topic);
 
-                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
-                else mouseOnText = false;
-                if (mouseOnText && player.player_phrase[0] == '\0' && player.opponent_phrase[0] == '\0') {
-                    SetMouseCursor(MOUSE_CURSOR_IBEAM);
-                    GetInput(&letterCount, phraseBuffer);
-                    if (IsKeyPressed(KEY_BACKSPACE)) {
-                        letterCount--;
-                        if (letterCount < 0) letterCount = 0;
-                        phraseBuffer[letterCount] = '\0';
-                    }
-                    if (IsKeyPressed(KEY_ENTER)) {
-                        strcpy(player.player_phrase, phraseBuffer);
-                        char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
-                        strcat(new_message, player.player_phrase);
-                        AddSystemMessage(new_message);
-                        ClearInputBox(phraseBuffer);
-                        SetPhrase(&player, client_sock);
-                        framesCounter = 0;
-                    }
+                if (is_receiving_topic) ToggleFlags(&is_receiving_topic, &is_receiving_phrase);
+
+                if (is_receiving_phrase) {
+                    SetGuessPhrase(&player, client_sock);
+                    ToggleFlags(&is_receiving_phrase, &is_setting_phrase);
                 }
+
+                if (CheckCollisionPointRec(GetMousePosition(), textBox) && is_setting_phrase) mouseOnText = true;
+                else mouseOnText = false;
+
+
+                if (mouseOnText) 
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player);
+                
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+                if (mouseOnText) framesCounter++;
+                else framesCounter = 0;
+
+                framesCounter++;
                 break;
             default:
                 break;
@@ -85,16 +90,9 @@ int main(int argc,  char *argv[]){
                 framesCounter++;
                 break;
             case GAMEPLAY:
-                DrawGameLayout();
-                DrawText(system_message3, 30, 380, 10, BLACK);
-                DrawText(system_message2, 30, 400, 10, BLACK);
-                DrawText(system_message, 30, 420, 10, MAROON);
-                DrawHealthBar(player.score, 30, SCREEN_HEIGHT / 2);
-                DrawHealthBar(player.opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
-                DrawTopic(topic);
-                DrawLettersPressed(player.letters_pressed, 50);
-                DrawLettersPressed(player.opponent_letters_pressed, 520);
+                DrawGameLayout(&player);
                 DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
+                DrawTopic(topic);
                 break;
             default:
                 break;
@@ -151,8 +149,9 @@ void setupSocketConnection(int *client_sock, int port, char *host){
 void getTopic(int client_sock, char *topic) {
     strcpy(system_message, DISPLAY_TOPIC);
     ReceiveMessage(client_sock, topic);
-    strcat(system_message, topic);
-    SendAck(client_sock);
+    strcpy(topic, CapitalizePhrase(topic));
+    strcat(system_message, CapitalizePhrase(topic));
     strcpy(system_message2, system_message);
     strcpy(system_message, WAITING_FOR_PHRASE);
+    SendAck(client_sock);
 }

@@ -30,6 +30,10 @@ int main(int argc, char *argv[]) {
     int letterCount = 0;
     char topic[MAX_STRING_SIZE];
 
+    bool is_setting_topic = true;
+    bool is_setting_phrase = false;
+    bool is_receiving_phrase = false;
+
      // Setup Connection
     ValidateArgs(argv[0], 2, argc);
     setupSocketConnection(&server_sock, &client_sock, atoi(argv[1]));
@@ -47,31 +51,27 @@ int main(int argc, char *argv[]) {
     while (!WindowShouldClose()) {
         switch (currentScreen) {
             case TITLE:
-                if (IsKeyPressed(KEY_ENTER)) currentScreen = GAMEPLAY;
+                if (IsKeyPressed(KEY_ENTER)) {
+                    currentScreen = GAMEPLAY;
+                    promptPhrase(topic, client_sock);
+                }
                 break;
             case GAMEPLAY:
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
-                if (strlen(topic) == 0) promptPhrase(topic, client_sock);
-                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
-                else mouseOnText = false;
-                if (mouseOnText && player.player_phrase[0] == '\0') {
-                    SetMouseCursor(MOUSE_CURSOR_IBEAM);
-                    GetInput(&letterCount, phraseBuffer);
-                    if (IsKeyPressed(KEY_BACKSPACE)) {
-                        letterCount--;
-                        if (letterCount < 0) letterCount = 0;
-                        phraseBuffer[letterCount] = '\0';
-                    }
-                    if (IsKeyPressed(KEY_ENTER)) {
-                        strcpy(player.player_phrase, phraseBuffer);
-                        char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
-                        strcat(new_message, player.player_phrase);
-                        AddSystemMessage(new_message);
-                        ClearInputBox(phraseBuffer);
-                        SetPhrase(&player, client_sock);
-                        framesCounter = 0;
-                    }
+                
+                if (is_setting_topic) ToggleFlags(&is_setting_topic, &is_setting_phrase);
+
+                if (is_receiving_phrase) {
+                    SetGuessPhrase(&player, client_sock);
+                    ToggleFlags(&is_receiving_phrase, &is_setting_phrase);
                 }
+
+                if (CheckCollisionPointRec(GetMousePosition(), textBox) && is_setting_phrase) mouseOnText = true;
+                else mouseOnText = false;
+                
+                if (mouseOnText)
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player);
+                
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
@@ -93,16 +93,8 @@ int main(int argc, char *argv[]) {
                 framesCounter++;
                 break;
             case GAMEPLAY:
-                DrawGameLayout();
+                DrawGameLayout(&player);
                 DrawTopic(topic);
-                DrawHealthBar(player.score, 30, SCREEN_HEIGHT / 2);
-                DrawHealthBar(player.opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
-                DrawText(system_message3, 30, 380, 10, BLACK);
-                DrawText(system_message2, 30, 400, 10, BLACK);
-                DrawText(system_message, 30, 420, 10, MAROON);
-                DrawLettersPressed(player.letters_pressed, 50);
-                DrawLettersPressed(player.opponent_letters_pressed, 520);
-                DrawText(player.opponent_progress, (SCREEN_WIDTH - 30) / 2 + 50, 50, 20, DARKGRAY);
                 DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 break;
             default:
@@ -125,13 +117,21 @@ void setupSocketConnection(int *server_sock, int *client_sock, int port){
 
 void promptPhrase(char topic[MAX_STRING_SIZE], int client_sock) {
     strcpy(system_message, DISPLAY_TOPIC);
-    strcpy(topic, setupTopic());
+    strcpy(topic, CapitalizePhrase(setupTopic()));
     strcat(system_message, topic);
     SendMessage(client_sock, setupTopic());
     ReceiveAck(client_sock);
     strcpy(system_message2, system_message);
     strcpy(system_message, SET_PHRASE);
 }
+
+char *setupTopic() {
+    time_t t;
+    srand((unsigned) time(&t));
+    char *topic = topics[rand() % MAX_TOPIC];
+    return topic;
+}
+
 
 // #include <stdlib.h>
 // #include <stdio.h>
@@ -308,9 +308,3 @@ void promptPhrase(char topic[MAX_STRING_SIZE], int client_sock) {
     // system("clear");   
 
 
-char *setupTopic() {
-    time_t t;
-    srand((unsigned) time(&t));
-    char *topic = topics[rand() % MAX_TOPIC];
-    return topic;
-}

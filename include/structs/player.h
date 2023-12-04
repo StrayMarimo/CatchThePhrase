@@ -1,4 +1,8 @@
 #include "int_values.h"
+#include <stdio.h>
+#include "socket_communication.h"
+#include <string.h>
+
 #ifndef PLAYER_H
 #define PLAYER_H
 

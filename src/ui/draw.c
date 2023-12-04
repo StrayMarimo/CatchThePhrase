@@ -1,6 +1,6 @@
 #include "draw.h"
 
-void DrawGameLayout() {
+void DrawGameLayout(struct Player *player) {
     DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
     DrawRectangle((SCREEN_WIDTH - 30) / 2 + 20, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
     DrawRectangle(10, 320, (SCREEN_WIDTH - 30) / 3 * 2, 200, BEIGE);
@@ -8,6 +8,17 @@ void DrawGameLayout() {
     DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 480, (SCREEN_WIDTH - 30) / 3, 40, BEIGE);
     DrawLine(30, 460, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 460, BLACK);
     DrawLine(30, 461, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 461, BLACK);
+
+    DrawText(system_message3, 30, 380, 10, BLACK);
+    DrawText(system_message2, 30, 400, 10, BLACK);
+    DrawText(system_message, 30, 420, 10, MAROON);
+    DrawHealthBar(player->score, 30, SCREEN_HEIGHT / 2);
+    DrawHealthBar(player->opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
+    DrawLettersPressed(player->letters_pressed, 50);
+    DrawLettersPressed(player->opponent_letters_pressed, 520);
+    DrawText(player->opponent_progress, (SCREEN_WIDTH - 30) / 2 + 50, 50, 20, DARKGRAY);
+    DrawText(player->progress, 80, 50, 20, DARKGRAY);
+    
 }
 
 void DrawLettersPressed(char *lettersPressed, int offset) {
