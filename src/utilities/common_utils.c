@@ -7,16 +7,6 @@ void DrawTextCenter(const char *text, int y, int font, Color color) {
     DrawText(text, x, y, font, color);
 }
 
-// #include <stdio.h>
-// #include <ctype.h>
-// #include <stdlib.h>
-// #include <unistd.h>
-// #include <string.h>
-// #include <time.h>
-// #include <ncurses.h>
-// #include "draw_box.h"
-// #include "int_values.h"
-
 
 bool ValidateArgs(char *file, int params_expected, int params_received) {
     char error_message[MAX_STRING_SIZE];
@@ -36,52 +26,54 @@ void DieWithError(char *error_message) {
     exit(EXIT_FAILURE);
 }
 
-// char* EncryptPhrase(char* phrase) {
-//     // Turns alphabet to asterisks.
+char* EncryptPhrase(char* phrase) {
+    // Turns alphabet to asterisks.
 
-//     char* encryptedPhrase;
-//     int phraseLength = strlen(phrase);
-//     int markedSpots = phraseLength/4;
-//     encryptedPhrase = (char*)malloc(phraseLength);
+    char* encryptedPhrase;
+    int phraseLength = strlen(phrase);
+    int markedSpots = phraseLength/4;
+    encryptedPhrase = (char*)malloc(phraseLength);
 
-//     strcpy(encryptedPhrase, phrase);
+    strcpy(encryptedPhrase, phrase);
     
-//     int ctr = 0;
-//     time_t t;
-//     srand((unsigned) time(&t));
-//     while(ctr < markedSpots){
-//         int i = rand() % phraseLength;
-//         if(encryptedPhrase[i] != '^'){
-//             encryptedPhrase[i] = '^';
-//             ctr++;
-//         }
-//         PrintLine("added marked spot");
-//     }
-//     for (int i = 0; i < phraseLength; i++) {
-//         if (isalpha(phrase[i]) && encryptedPhrase[i] != '^') {
-//             encryptedPhrase[i] = '*';
-//         }
-//     }
+    int ctr = 0;
+    time_t t;
+    srand((unsigned) time(&t));
+    while(ctr < markedSpots){
+        int i = rand() % phraseLength;
+        if(encryptedPhrase[i] != '^'){
+            encryptedPhrase[i] = '^';
+            ctr++;
+        } 
+    }
+    for (int i = 0; i < phraseLength; i++) {
+        if (isalpha(phrase[i]) && encryptedPhrase[i] != '^') {
+            encryptedPhrase[i] = '*';
+        }
+    }
 
-//     return encryptedPhrase;
-// } 
+    return encryptedPhrase;
+} 
 
-// char* CapitalizePhrase(char* phrase) {
-//     // returns a capitalized char*
+char* CapitalizePhrase(char* phrase) {
 
-//     char* tempPhrase;
-//     int phraseLength = strlen(phrase);
-//     tempPhrase = (char*)malloc(phraseLength);
+    char* tempPhrase;
+    int phraseLength = strlen(phrase);
+    tempPhrase = (char*)malloc(phraseLength);
+    strcpy(tempPhrase, phrase);
 
-//     // Copy string to temp variable
-//     strcpy(tempPhrase, phrase);
+    for (int i = 0; i < phraseLength; i++) {
+        tempPhrase[i] = toupper(tempPhrase[i]);
+    }
 
-//     for (int i = 0; i < phraseLength; i++) {
-//         tempPhrase[i] = toupper(tempPhrase[i]);
-//     }
+    return tempPhrase;
+}
 
-//     return tempPhrase;
-// }
+void AddSystemMessage(char message[MAX_STRING_SIZE]) {
+    strcpy(system_message3, system_message2);
+    strcpy(system_message2, system_message);
+    strcpy(system_message, message);
+}
 
 
 // void PrintLine(const char *format, ...) {

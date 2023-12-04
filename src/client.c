@@ -14,6 +14,9 @@
 char system_message[MAX_STRING_SIZE];
 char system_message2[MAX_STRING_SIZE];
 char system_message3[MAX_STRING_SIZE];
+char phraseBuffer[MAX_STRING_SIZE] = "\0";
+int letterCount = 0;
+
 typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen;
 void setupSocketConnection(int *client_sock, int port, char *host);
 
@@ -46,7 +49,10 @@ int main(int argc,  char *argv[]){
                     strcpy(system_message, "System Message> The chosen topic is: ");
                     ReceiveMessage(client_sock, topic);
                     strcat(system_message, topic);
+                    strcpy(system_message2, system_message);
+                    strcpy(system_message, "System Message> Waiting for opponent to set a phrase...");
                     SendAck(client_sock);
+
                 }
                 break;
             default:

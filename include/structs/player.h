@@ -17,7 +17,7 @@ struct Player {
 
 struct Player CreatePlayer();
 void PrintPlayer(struct Player player);
-// void SetPhrase(struct Player *player, int client_sock);
+void SetPhrase(struct Player *player, int client_sock);
 // void SetGuessPhrase(struct Player *player, int client_sock);
 // char InputLetter(struct Player *player);
 // bool isLetterPressed(struct Player *player, char letter);

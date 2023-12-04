@@ -1,6 +1,4 @@
-
 #include "draw.h"
-#include "stdio.h"
 
 void DrawGameLayout() {
     DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
@@ -50,4 +48,16 @@ void DrawHealthBar(int currentHealth, int x, int y) {
 
     DrawRectangle(x, y, currentHealthWidth, HEALTH_BAR_HEIGHT, GREEN);
 
+}
+
+void DrawInputBox(char phraseBuffer[MAX_STRING_SIZE], Rectangle textBox, bool mouseOnText, int letterCount, int framesCounter) {
+    DrawRectangleRec(textBox, LIGHTGRAY);
+    if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
+    else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
+    DrawText(phraseBuffer, 30, 440, 10, BLACK);
+    if (mouseOnText) {
+        if (letterCount < MAX_STRING_SIZE)
+            if (((framesCounter/20)%2) == 0) 
+                DrawText("_", (int)textBox.x + 7 + MeasureText(phraseBuffer, 10), (int)textBox.y, 10, MAROON);
+                }
 }

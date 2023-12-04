@@ -26,4 +26,13 @@
 #define HOST_ERROR "Error: no such host."
 #define EXITING "Exiting... Press enter key to close window."
 
+// SYSTEM MESSAGES
+#define DISPLAY_TOPIC "System Message> The chosen topic is: "
+#define WAITING_FOR_PHRASE "System Message> Waiting for opponent to set a phrase..."
+#define WAITING_FOR_GUESS_PHRASE "System Message> Waiting for opponent to guess a letter..."
+#define GUESS_PHRASE "System Message> Guess a letter: "
+#define SET_PHRASE "System Message> Set a phrase. "
+#define DISPLAY_PHRASE "System Message> Your phrase is: "
+
+
 #endif
