@@ -29,44 +29,34 @@ int main(int argc, char *argv[]) {
     int server_sock, client_sock;
     int letterCount = 0;
     char topic[MAX_STRING_SIZE];
-    bool is_phrase_set = false;
 
      // Setup Connection
     ValidateArgs(argv[0], 2, argc);
     setupSocketConnection(&server_sock, &client_sock, atoi(argv[1]));
     struct Player player = CreatePlayer();
     printf("Player created\n: %s", player.letters_pressed);
+
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER1);
-
     Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
     bool mouseOnText = false;
-
     GameScreen currentScreen = TITLE;
     SetTargetFPS(60);
+
+    // Update
     while (!WindowShouldClose()) {
         switch (currentScreen) {
             case TITLE:
                 if (IsKeyPressed(KEY_ENTER)) currentScreen = GAMEPLAY;
                 break;
             case GAMEPLAY:
-                // framesCounter = 0;
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
                 if (strlen(topic) == 0) promptPhrase(topic, client_sock);
                 if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
                 else mouseOnText = false;
-                if (mouseOnText && !is_phrase_set) {
+                if (mouseOnText && player.player_phrase[0] == '\0') {
                     SetMouseCursor(MOUSE_CURSOR_IBEAM);
-                    int key = GetCharPressed();
-                    while (key > 0) {
-                        if ((key >= 32) && (key <= 125) && (letterCount < MAX_STRING_SIZE - 1)) {
-                            phraseBuffer[letterCount] = (char)key;
-                            phraseBuffer[letterCount+1] = '\0'; // Add null terminator at the end of the string.
-                            letterCount++;
-                        }
-                        key = GetCharPressed();  // Check next character in the queue
-                    }
-
+                    GetInput(&letterCount, phraseBuffer);
                     if (IsKeyPressed(KEY_BACKSPACE)) {
                         letterCount--;
                         if (letterCount < 0) letterCount = 0;
@@ -77,15 +67,12 @@ int main(int argc, char *argv[]) {
                         char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
                         strcat(new_message, player.player_phrase);
                         AddSystemMessage(new_message);
-                        for (int i = 0; i < sizeof(phraseBuffer); ++i)
-                            phraseBuffer[i] = '\0'; 
+                        ClearInputBox(phraseBuffer);
                         SetPhrase(&player, client_sock);
-                        is_phrase_set = true;
                         framesCounter = 0;
                     }
                 }
-                else
-                    SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+                else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
 
@@ -94,6 +81,8 @@ int main(int argc, char *argv[]) {
             default:
                 break;
         }
+
+        // Draw
         BeginDrawing();
         ClearBackground(RAYWHITE);  
 

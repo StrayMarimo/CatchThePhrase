@@ -1,7 +1,7 @@
 #include "int_values.h"
 #include "player.h"
 #include <string.h>
-// #include "socket_communication.h"
+#include "socket_communication.h"
 #include "common_utils.h"
 // #include <string.h>
 #include <stdio.h>
@@ -44,20 +44,15 @@ void PrintPlayer(struct Player player) {
 }
 
 void SetPhrase(struct Player *player, int client_sock) { 
-    // SendMessage(client_sock, player->player_phrase);
+    SendMessage(client_sock, player->player_phrase);
     strcpy(player->player_phrase, CapitalizePhrase(player->player_phrase));
     strcpy(player->opponent_progress, EncryptPhrase(player->player_phrase));
 }
 
-// void SetGuessPhrase(struct Player *player, int client_sock) {
-//     PrintLine("Waiting for opponent to set a phrase...\n");
-//     char buffer[MAX_STRING_SIZE];
-//     ReceiveMessage(client_sock, buffer, true);
-
-//     strcpy(player->opponent_phrase, CapitalizePhrase(buffer));
-//     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
-//     PrintHashedCharacter(player->progress);
-// }
+void SetGuessPhrase(struct Player *player, int client_sock) {
+    strcpy(player->opponent_phrase, CapitalizePhrase(player->opponent_phrase));
+    strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
+}
 
 // char InputLetter(struct Player *player) {
 //     PrintLine("Guess a Letter: ");

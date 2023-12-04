@@ -10,6 +10,7 @@
 #include "player.h"
 #include <string.h>
 #include "raylib.h"
+#include "string_values.h"
 
 char system_message[MAX_STRING_SIZE];
 char system_message2[MAX_STRING_SIZE];
@@ -19,6 +20,7 @@ int letterCount = 0;
 
 typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen;
 void setupSocketConnection(int *client_sock, int port, char *host);
+void getTopic(int client_sock, char *topic);
 
 int main(int argc,  char *argv[]){
     int framesCounter = 0;
@@ -34,6 +36,8 @@ int main(int argc,  char *argv[]){
     
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER2);
+    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
+    bool mouseOnText = false;
 
     GameScreen currentScreen = TITLE;
     SetTargetFPS(60);
@@ -44,16 +48,29 @@ int main(int argc,  char *argv[]){
                 break;
             case GAMEPLAY:
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
+                if (strlen(topic) == 0) getTopic(client_sock, topic);
 
-                if (strlen(topic) == 0) {
-                    strcpy(system_message, "System Message> The chosen topic is: ");
-                    ReceiveMessage(client_sock, topic);
-                    strcat(system_message, topic);
-                    strcpy(system_message2, system_message);
-                    strcpy(system_message, "System Message> Waiting for opponent to set a phrase...");
-                    SendAck(client_sock);
-
+                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
+                else mouseOnText = false;
+                if (mouseOnText && player.player_phrase[0] == '\0' && player.opponent_phrase[0] == '\0') {
+                    SetMouseCursor(MOUSE_CURSOR_IBEAM);
+                    GetInput(&letterCount, phraseBuffer);
+                    if (IsKeyPressed(KEY_BACKSPACE)) {
+                        letterCount--;
+                        if (letterCount < 0) letterCount = 0;
+                        phraseBuffer[letterCount] = '\0';
+                    }
+                    if (IsKeyPressed(KEY_ENTER)) {
+                        strcpy(player.player_phrase, phraseBuffer);
+                        char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
+                        strcat(new_message, player.player_phrase);
+                        AddSystemMessage(new_message);
+                        ClearInputBox(phraseBuffer);
+                        SetPhrase(&player, client_sock);
+                        framesCounter = 0;
+                    }
                 }
+                else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                 break;
             default:
                 break;
@@ -77,6 +94,7 @@ int main(int argc,  char *argv[]){
                 DrawTopic(topic);
                 DrawLettersPressed(player.letters_pressed, 50);
                 DrawLettersPressed(player.opponent_letters_pressed, 520);
+                DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 break;
             default:
                 break;
@@ -128,4 +146,13 @@ void setupSocketConnection(int *client_sock, int port, char *host){
     CreateSocket(client_sock);
     server = FindHost(host);
     EstablishConnection(*client_sock, server, port);
+}
+
+void getTopic(int client_sock, char *topic) {
+    strcpy(system_message, DISPLAY_TOPIC);
+    ReceiveMessage(client_sock, topic);
+    strcat(system_message, topic);
+    SendAck(client_sock);
+    strcpy(system_message2, system_message);
+    strcpy(system_message, WAITING_FOR_PHRASE);
 }

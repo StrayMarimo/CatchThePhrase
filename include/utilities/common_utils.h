@@ -24,6 +24,8 @@ void DrawTopic(char *topic);
 char* EncryptPhrase(char* phrase);
 char* CapitalizePhrase(char* phrase);
 void AddSystemMessage(char message[MAX_STRING_SIZE]);
+void ClearInputBox(char *phraseBuffer);
+void GetInput(int *letterCount, char *phraseBuffer);
 // void PrintLine(const char *format, ...);
 // void PrintSysMessage(int lineIndex, const char *format, ...);
 // void PrintFile(const char* filename);

@@ -75,6 +75,23 @@ void AddSystemMessage(char message[MAX_STRING_SIZE]) {
     strcpy(system_message, message);
 }
 
+void ClearInputBox(char *phraseBuffer) {
+    for (int i = 0; i < MAX_STRING_SIZE; i++) {
+        phraseBuffer[i] = '\0';
+    }
+}
+
+void GetInput(int *letterCount, char *phraseBuffer) {
+    int key = GetCharPressed();
+    while (key > 0) {
+        if ((key >= 32) && (key <= 125) && (*letterCount < MAX_STRING_SIZE - 1)) {
+            phraseBuffer[*letterCount] = (char)key;
+            phraseBuffer[(*letterCount) +1] = '\0';
+            (*letterCount)++;
+        }
+        key = GetCharPressed();  // Check next character in the queue
+    }
+}
 
 // void PrintLine(const char *format, ...) {
 //     va_list args;
