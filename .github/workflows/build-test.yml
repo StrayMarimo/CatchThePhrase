@@ -21,10 +21,9 @@ jobs:
     - name: Download and build Raylib
       run: |
         git clone https://github.com/raysan5/raylib.git
-        cd raylib
-        make
-        sudo make install
-        cd ..
+        cd raylib/src
+        make PLATFORM=PLATFORM_DESKTOP || { echo 'Raylib build failed'; exit 1; }
+        cd ../..
     
     - name: Test Compilation
       run: | 
