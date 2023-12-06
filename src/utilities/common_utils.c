@@ -75,12 +75,6 @@ void AddSystemMessage(char message[MAX_STRING_SIZE]) {
     strcpy(system_message, message);
 }
 
-void ClearInputBox(char *phraseBuffer) {
-    for (int i = 0; i < MAX_STRING_SIZE; i++) {
-        phraseBuffer[i] = '\0';
-    }
-}
-
 void GetInput(int *letterCount, char *phraseBuffer) {
     int key = GetCharPressed();
     while (key > 0) {
@@ -94,7 +88,7 @@ void GetInput(int *letterCount, char *phraseBuffer) {
 }
 
 
-void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, bool *is_setting_phrase, bool *is_receiving_phrase, int *framesCounter, bool *mouseOnText, int client_sock, struct Player *player) {
+void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, bool *is_setting_phrase, bool *is_receiving_phrase, int *framesCounter, bool *mouseOnText, int client_sock, struct Player *player, bool isPlayer1) {
     SetMouseCursor(MOUSE_CURSOR_IBEAM);
     GetInput(letterCount, phraseBuffer);
 
@@ -109,14 +103,51 @@ void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount,
         char new_message[MAX_STRING_SIZE] = DISPLAY_PHRASE;
         strcat(new_message, CapitalizePhrase(player->player_phrase));
         AddSystemMessage(new_message);
-        ClearInputBox(phraseBuffer);
+        while((*letterCount) > 0) {
+            (*letterCount)--;
+            if (*letterCount < 0) *letterCount = 0;
+            phraseBuffer[*letterCount] = '\0';
+        }
         *is_setting_phrase = false;
         *is_receiving_phrase = true;
         *framesCounter = 0;
         *mouseOnText = false;
-        AddSystemMessage(WAITING_FOR_PHRASE);
+        if (isPlayer1) 
+            AddSystemMessage(WAITING_FOR_PHRASE);
+        else
+            AddSystemMessage(OPPONENTS_TURN);
         SetPhrase(player, client_sock);
     }
+}
+
+void ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, int *framesCounter, bool *mouseOnText, bool *isGuessing, int client_sock, struct Player *player) {
+    SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    if(*letterCount != 1)
+        GetInput(letterCount, phraseBuffer);
+
+    
+    if (IsKeyPressed(KEY_BACKSPACE)) {
+        (*letterCount)--;
+        if (*letterCount < 0) *letterCount = 0;
+        phraseBuffer[*letterCount] = '\0';
+    }
+
+    if (IsKeyPressed(KEY_ENTER)) {
+        char new_message[MAX_STRING_SIZE] = PRINT_LETTER;
+        strcat(new_message, phraseBuffer);
+        AddSystemMessage(new_message);
+        *framesCounter = 0;
+        *mouseOnText = false;
+
+        if (isLetterPressed(player, phraseBuffer[0])) {
+            AddSystemMessage(ALREADY_GUESSED);
+            AddSystemMessage(GUESS_PHRASE);
+            return;
+        }
+
+        SetProgress(player, phraseBuffer[0], client_sock, isGuessing);
+    }
+
 }
 
 

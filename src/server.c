@@ -33,6 +33,8 @@ int main(int argc, char *argv[]) {
     bool is_setting_topic = true;
     bool is_setting_phrase = false;
     bool is_receiving_phrase = false;
+    bool is_guessing = false;
+    bool is_waiting_for_guess = false;
 
      // Setup Connection
     ValidateArgs(argv[0], 2, argc);
@@ -63,14 +65,21 @@ int main(int argc, char *argv[]) {
 
                 if (is_receiving_phrase) {
                     SetGuessPhrase(&player, client_sock);
-                    ToggleFlags(&is_receiving_phrase, &is_setting_phrase);
+                    ToggleFlags(&is_receiving_phrase, &is_guessing);
+                    framesCounter = 0;
+                    AddSystemMessage(GUESS_PHRASE);
                 }
 
-                if (CheckCollisionPointRec(GetMousePosition(), textBox) && is_setting_phrase) mouseOnText = true;
+                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
                 else mouseOnText = false;
                 
-                if (mouseOnText)
-                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player);
+                if (mouseOnText && is_setting_phrase) {
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, true);
+                }
+
+                if (mouseOnText && is_guessing) { 
+                    ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, client_sock, &player);
+                }
                 
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                 if (mouseOnText) framesCounter++;

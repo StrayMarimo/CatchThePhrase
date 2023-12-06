@@ -29,10 +29,12 @@
 // SYSTEM MESSAGES
 #define DISPLAY_TOPIC "System Message> The chosen topic is: "
 #define WAITING_FOR_PHRASE "System Message> Waiting for opponent to set a phrase..."
-#define WAITING_FOR_GUESS_PHRASE "System Message> Waiting for opponent to guess a letter..."
+#define ALREADY_GUESSED "System Message> You already guessed that letter."
 #define GUESS_PHRASE "System Message> Guess a letter: "
 #define SET_PHRASE "System Message> Set a phrase. "
 #define DISPLAY_PHRASE "System Message> Your phrase is: "
-
-
+#define NOT_IN_PHRASE "System Message> Letter not in Phrase."
+#define PLAYER_WON "System Message> You guessed the Phrase!"
+#define OPPONENTS_TURN "System Message> Waiting for opponent to guess a letter..."
+#define PRINT_LETTER "System message> You guessed the letter "
 #endif

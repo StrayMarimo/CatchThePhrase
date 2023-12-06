@@ -22,9 +22,9 @@ void DieWithError(char *error_message);
 char* EncryptPhrase(char* phrase);
 char* CapitalizePhrase(char* phrase);
 void AddSystemMessage(char message[MAX_STRING_SIZE]);
-void ClearInputBox(char *phraseBuffer);
 void GetInput(int *letterCount, char *phraseBuffer);
-void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, bool *is_setting_phrase, bool *is_receiving_phrase, int *framesCounter, bool *mouseOnText, int client_sock, struct Player *player);
+void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, bool *is_setting_phrase, bool *is_receiving_phrase, int *framesCounter, bool *mouseOnText, int client_sock, struct Player *player, bool isPlayer1);
+void ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, int *framesCounter, bool *mouseOnText, bool *isGuessing, int client_sock, struct Player *player);
 void ToggleFlags(bool* flag1, bool* flag2);
 void DrawTextCenter(const char *text, int y, int font, Color color);
 #endif

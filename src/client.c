@@ -62,6 +62,7 @@ int main(int argc,  char *argv[]){
                 if (is_receiving_phrase) {
                     SetGuessPhrase(&player, client_sock);
                     ToggleFlags(&is_receiving_phrase, &is_setting_phrase);
+                    AddSystemMessage(SET_PHRASE);
                 }
 
                 if (CheckCollisionPointRec(GetMousePosition(), textBox) && is_setting_phrase) mouseOnText = true;
@@ -69,7 +70,7 @@ int main(int argc,  char *argv[]){
 
 
                 if (mouseOnText) 
-                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player);
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, false);
                 
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                 if (mouseOnText) framesCounter++;
