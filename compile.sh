@@ -37,7 +37,7 @@ UNAME=$(uname)
 
 # Linux-specific settings
 if [ "$UNAME" == "Linux" ]; then
-    LIBS += -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU
+    LIBS="$LIBS -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU"
 fi
 
 # compile
