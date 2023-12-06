@@ -44,7 +44,7 @@ UNAME=$(uname)
 echo "Detected OS: $UNAME"
 
 # Linux-specific settings
-if [ "$UNAME" == "Linux" ]; then
+if [ "$UNAME" != "Darwin" ]; then
     LIBS="-I./raylib/src -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGLU -L./raylib/src $LIBS"
 fi
 
