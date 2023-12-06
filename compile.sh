@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Check if Raylib is already installed
 if [ ! -d "raylib" ]; then
     echo "Raylib not found, cloning..."
@@ -6,7 +7,11 @@ if [ ! -d "raylib" ]; then
 fi
 
 cd raylib/src
+
+# Make the static version of Raylib
 make PLATFORM=PLATFORM_DESKTOP || { echo 'Raylib build failed'; exit 1; }
+
+# Move back to the project root
 cd ../..
 
 echo compiling programs...
@@ -26,6 +31,7 @@ INCLUDE_DIRS="
     ${ROOT_HEADER}/ui/
     ${ROOT_HEADER}/raylib/src
 "
+
 # Add source files as needed
 SRC_FILES="
     ${ROOT_SRC}utilities/*.c
@@ -33,14 +39,15 @@ SRC_FILES="
     ${ROOT_SRC}ui/*.c
 "
 
+# Determine the operating system
 UNAME=$(uname)
 
 # Linux-specific settings
 if [ "$UNAME" == "Linux" ]; then
-    LIBS="$LIBS -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU"
+    LIBS="$LIBS -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU -L./raylib/src "
 fi
-echo "Libraries: $LIBS"
-# compile
+
+# Compile
 gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES  \
     || { echo 'Server compilation failed'; exit 1; }
 echo "Server compiled successfully!"
