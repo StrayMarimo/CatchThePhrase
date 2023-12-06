@@ -50,22 +50,13 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
     strcpy(player->progress, EncryptPhrase(player->opponent_phrase));
 }
 
-// char InputLetter(struct Player *player) {
-//     PrintLine("Guess a Letter: ");
-//     char letter = getch();
-//     PrintLine("\n");
-//     while (isLetterPressed(player, letter)) {
-//         PrintLine("\nYou have already pressed that letter. Guess again: ");
-//         letter = getch();
-//         PrintLine("\n"); 
-//     }
-//     return letter;
-// }
-
-bool isLetterPressed(struct Player *player, char letter){
+bool isLetterPressed(struct Player *player, char letter, bool isPlayer){
     for (int i = 0; i < 26; i++){
         if(toupper(letter) == player->letters_pressed[i]){
-            player->letters_pressed[i] = '*';
+            if (isPlayer)
+                player->letters_pressed[i] = '*';
+            else
+                player->opponent_letters_pressed[i] = '*';
             return false;
         } 
         
@@ -82,48 +73,59 @@ bool IsPhraseGuessed(char *phrase, char *progress){
     return true;
 }
 
-// bool SetOpponentProgress(struct Player *player, char letter, int client_sock) {
-//     bool isLetterInPhrase = false;
-
-//     for(int i = 0; i < strlen(player->player_phrase); i++){
-//         if(toupper(letter) == player->player_phrase[i]){
-//             player->opponent_progress[i] = letter;
-//             isLetterInPhrase = true;
-//         }
-//     }
-//     if (!isLetterInPhrase) {
-//         PrintLine("Your opponent guessed a letter not in the phrase.\n");
-//     }
-    
-//     PrintLine("Opponent Progress: ");
-//     PrintHashedCharacter(player->opponent_progress);
-    
-//     if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
-//         PrintLine("Your opponent guessed the phrase!\n");
-
-//         return true;
-//     }
-
-//     return false;
-// }
-
-bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing) {
+bool SetOpponentProgress(struct Player *player, int client_sock) {
+    char buffer[MAX_STRING_SIZE];
     bool isLetterInPhrase = false;
 
-    // for(int i = 0; i < 26; i++)
-    //     PrintLine("%E ", player->letters_pressed[i]);
-    // PrintLine("\n");
+    ReceiveMessage(client_sock, buffer);
+
+    if (isLetterPressed(player, buffer[0], false)) {
+        AddSystemMessage(ALREADY_GUESSED);
+        AddSystemMessage(GUESS_PHRASE);
+        return false;
+    }
+
+    for(int i = 0; i < strlen(player->player_phrase); i++){
+        if(toupper(buffer[0]) == player->player_phrase[i]){
+            player->opponent_progress[i] = buffer[0];
+            isLetterInPhrase = true;
+        }
+    }
+    if (!isLetterInPhrase)
+        AddSystemMessage(OPPONENT_NOT_IN_PHRASE);
+    else {
+        char new_message[MAX_STRING_SIZE] = PRTINT_LETTER_OPPONENT;
+        sprintf(new_message, "%s%c", new_message, buffer[0]);
+        AddSystemMessage(new_message);
+    }
+    
+    if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
+        AddSystemMessage(OPPONENT_WON);
+        player->opponent_score -=10;
+        return true;
+    }
+
+    AddSystemMessage(GUESS_PHRASE);
+
+    return false;
+}
+
+bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess) {
+    bool isLetterInPhrase = false;
+
+
+    if (isLetterPressed(player, letter, true)) {
+        AddSystemMessage(ALREADY_GUESSED);
+        AddSystemMessage(GUESS_PHRASE);
+        return false;
+    }
 
     for (int i = 0; i < strlen(player->opponent_phrase); i++) {
-        player->letters_pressed[i] = '*';
         if (toupper(letter) == player->opponent_phrase[i]) {
             isLetterInPhrase = true;
             player->progress[i] = letter;
         }
     }
-
-
-
 
     if (!isLetterInPhrase) {
         player->score -= 10;
@@ -131,18 +133,15 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
     }
 
     *isGuessing = false;
+    *isWaitingForGuess = true;
 
-    // PrintLine("Your Progress: ");
-    // PrintHashedCharacter(player->progress);
 
     if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
         AddSystemMessage(PLAYER_WON);
-        // SendMessage(client_sock, &letter, false);
         return true;
     }
 
-    // AddSystemMessage(OPPONENTS_TURN);
-    // SendMessage(client_sock, &letter, false);
+    AddSystemMessage(OPPONENTS_TURN);
     return false;
 }
 

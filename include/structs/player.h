@@ -24,7 +24,7 @@ void PrintPlayer(struct Player player);
 void SetPhrase(struct Player *player, int client_sock);
 void SetGuessPhrase(struct Player *player, int client_sock);
 // char InputLetter(struct Player *player);
-bool isLetterPressed(struct Player *player, char letter);
-// bool SetOpponentProgress(struct Player *player, char letter, int client_sock);
-bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing);
+bool isLetterPressed(struct Player *player, char letter, bool isPlayer1);
+bool SetOpponentProgress(struct Player *player, int client_sock);
+bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess);
 #endif

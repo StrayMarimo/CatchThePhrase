@@ -24,7 +24,8 @@
 #define ACCEPT_ERROR "Error: accept() Failed."
 #define CONNECT_ERROR "Error: connect() Failed."
 #define HOST_ERROR "Error: no such host."
-#define EXITING "Exiting... Press enter key to close window."
+#define WON "Player "
+#define EXITING "Exiting... Press ESC key to close window."
 
 // SYSTEM MESSAGES
 #define DISPLAY_TOPIC "System Message> The chosen topic is: "
@@ -35,6 +36,10 @@
 #define DISPLAY_PHRASE "System Message> Your phrase is: "
 #define NOT_IN_PHRASE "System Message> Letter not in Phrase."
 #define PLAYER_WON "System Message> You guessed the Phrase!"
+#define OPPONENT_WON "System Message> Your opponent guessed the Phrase!"
 #define OPPONENTS_TURN "System Message> Waiting for opponent to guess a letter..."
+#define OPPONENT_NOT_IN_PHRASE "System Message> Your opponent guessed a letter not in the phrase."
 #define PRINT_LETTER "System message> You guessed the letter "
+#define PRTINT_LETTER_OPPONENT "System message> Your opponent guessed the letter "
+
 #endif

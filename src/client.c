@@ -17,7 +17,7 @@ char system_message2[MAX_STRING_SIZE];
 char system_message3[MAX_STRING_SIZE];
 
 
-typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen;
+typedef enum GameScreen { TITLE, GAMEPLAY, GAMEOVER } GameScreen;
 void setupSocketConnection(int *client_sock, int port, char *host);
 void getTopic(int client_sock, char *topic);
 
@@ -27,11 +27,14 @@ int main(int argc,  char *argv[]){
     char buffer[MAX_STRING_SIZE];
     char topic[MAX_STRING_SIZE];
     char phraseBuffer[MAX_STRING_SIZE] = "\0";
+    char winner[MAX_STRING_SIZE];
     int letterCount = 0;
-    bool isGuessing = false;
+    bool is_guessing = false;
+    bool is_waiting_for_guess = false;
     bool is_receiving_phrase = false;
     bool is_receiving_topic = true;
     bool is_setting_phrase = false;
+    bool did_player2_won = false;
     struct Player player = CreatePlayer();
 
     // Setup Connection
@@ -65,14 +68,28 @@ int main(int argc,  char *argv[]){
                     AddSystemMessage(SET_PHRASE);
                 }
 
-                if (CheckCollisionPointRec(GetMousePosition(), textBox) && is_setting_phrase) mouseOnText = true;
+                if (is_waiting_for_guess) {
+                    if (!SetOpponentProgress(&player, client_sock))
+                        ToggleFlags(&is_waiting_for_guess, &is_guessing);
+                    else currentScreen = GAMEOVER;
+                    
+                }
+
+                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
                 else mouseOnText = false;
 
 
-                if (mouseOnText) 
-                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, false);
-                
+                if (mouseOnText && is_setting_phrase) 
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_waiting_for_guess, &framesCounter, &mouseOnText, client_sock, &player, false);
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+                if (mouseOnText && is_guessing) { 
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess,  client_sock, &player)) {
+                        did_player2_won = true;
+                        currentScreen = GAMEOVER;
+                    }
+                } else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
 
@@ -95,47 +112,22 @@ int main(int argc,  char *argv[]){
                 DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 DrawTopic(topic);
                 break;
+            case GAMEOVER:
+
+                ClearBackground(RAYWHITE);
+                strcpy(winner, WON);
+                strcat(winner, did_player2_won ? "2" : "1");
+                strcat(winner, " won!");
+                DrawTextCenter(winner, 220, 20, MAROON);
+                DrawTextCenter(EXITING, 250, 20, DARKGRAY);
+                SendAck(client_sock);
+
             default:
                 break;
         }
-
         EndDrawing();
     }
     CloseWindow();
-
-    // struct Player player = CreatePlayer();
-
-    // // Setup Topic
-    // ReceiveMessage(client_sock, buffer, false);
-    // // PrintLine("The chosen topic: %s\n", buffer);
-    // SendAck(client_sock);
-
-    // // Setup Phrases
-    // SetGuessPhrase(&player, client_sock);
-    // SetPhrase(&player, client_sock);
-    // PrintPlayer(player);
-
-
-    // while (player.score > 0) {
-    //     if (isGuessing) {
-    //         // PrintLine("Your turn to guess.\n");
-    //         char letter = InputLetter(&player);
-    //         if (SetProgress(&player, letter, client_sock)) break;
-    //     } else {
-    //         // PrintLine("Your opponent is guessing.\n");
-    //         ReceiveMessage(client_sock, buffer, false);
-    //         if (SetOpponentProgress(&player, *buffer, client_sock)) break;
-    //     }
-    //     isGuessing = !isGuessing;
-    //     // PrintLine("\n");
-    // }
-
-    // Close Connection
-    // close(client_sock);
-
-    // refresh();
-    // getch();
-    // endwin();
     return 0;
 }
 

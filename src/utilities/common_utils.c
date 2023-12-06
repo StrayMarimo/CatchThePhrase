@@ -120,7 +120,8 @@ void ProcessInputForPhrase(char phraseBuffer[MAX_STRING_SIZE], int *letterCount,
     }
 }
 
-void ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, int *framesCounter, bool *mouseOnText, bool *isGuessing, int client_sock, struct Player *player) {
+bool ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount, int *framesCounter, bool *mouseOnText, bool *isGuessing, bool *isWaitingForGuess, int client_sock, struct Player *player) {
+    bool isGameOver = false;
     SetMouseCursor(MOUSE_CURSOR_IBEAM);
     if(*letterCount != 1)
         GetInput(letterCount, phraseBuffer);
@@ -139,14 +140,19 @@ void ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount,
         *framesCounter = 0;
         *mouseOnText = false;
 
-        if (isLetterPressed(player, phraseBuffer[0])) {
-            AddSystemMessage(ALREADY_GUESSED);
-            AddSystemMessage(GUESS_PHRASE);
-            return;
+        if (SetProgress(player, phraseBuffer[0], client_sock, isGuessing, isWaitingForGuess)) {
+             isGameOver = true;
         }
 
-        SetProgress(player, phraseBuffer[0], client_sock, isGuessing);
+        SendMessage(client_sock, phraseBuffer);
+        while((*letterCount) > 0) {
+            (*letterCount)--;
+            if (*letterCount < 0) *letterCount = 0;
+            phraseBuffer[*letterCount] = '\0';
+        }
     }
+
+    return isGameOver;
 
 }
 

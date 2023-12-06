@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 
 char system_message[MAX_STRING_SIZE];
 char system_message2[MAX_STRING_SIZE];
@@ -21,7 +22,7 @@ void setupSocketConnection(int *server_sock, int *client_sock, int port);
 char *setupTopic();
 void promptPhrase(char topic[MAX_STRING_SIZE], int client_sock);
 
-typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen;
+typedef enum GameScreen { TITLE, GAMEPLAY, GAMEOVER } GameScreen;
 
 int main(int argc, char *argv[]) {
     int framesCounter = 0;
@@ -29,12 +30,14 @@ int main(int argc, char *argv[]) {
     int server_sock, client_sock;
     int letterCount = 0;
     char topic[MAX_STRING_SIZE];
+    char winner[MAX_STRING_SIZE];
 
     bool is_setting_topic = true;
     bool is_setting_phrase = false;
     bool is_receiving_phrase = false;
     bool is_guessing = false;
     bool is_waiting_for_guess = false;
+    bool did_player1_won = false;
 
      // Setup Connection
     ValidateArgs(argv[0], 2, argc);
@@ -70,23 +73,32 @@ int main(int argc, char *argv[]) {
                     AddSystemMessage(GUESS_PHRASE);
                 }
 
+                if (is_waiting_for_guess) {
+                    if (!SetOpponentProgress(&player, client_sock))
+                        ToggleFlags(&is_waiting_for_guess, &is_guessing);
+                    else currentScreen = GAMEOVER;
+                }
+
                 if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
                 else mouseOnText = false;
                 
                 if (mouseOnText && is_setting_phrase) {
                     ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, true);
-                }
+                }  else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
                 if (mouseOnText && is_guessing) { 
-                    ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, client_sock, &player);
-                }
-                
-                else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess, client_sock, &player)) {
+                        ReceiveAck(client_sock);
+                        did_player1_won = true;
+                        currentScreen = GAMEOVER;
+                    }
+                } else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
 
                 framesCounter++;
-                break;
+                break; 
             default:
                 break;
         }
@@ -106,6 +118,13 @@ int main(int argc, char *argv[]) {
                 DrawTopic(topic);
                 DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 break;
+            case GAMEOVER:
+                ClearBackground(RAYWHITE);
+                strcpy(winner, WON);
+                strcat(winner, did_player1_won ? "1" : "2");
+                strcat(winner, " won!");
+                DrawTextCenter(winner, 220, 20, MAROON);
+                DrawTextCenter(EXITING, 250, 20, DARKGRAY);
             default:
                 break;
         }
@@ -140,180 +159,4 @@ char *setupTopic() {
     char *topic = topics[rand() % MAX_TOPIC];
     return topic;
 }
-
-
-// #include <stdlib.h>
-// #include <stdio.h>
-// #include <netinet/in.h>
-// #include <unistd.h>
-// #include <time.h>
-// #include "int_values.h"
-// #include "socket_connection.h"
-// #include "socket_communication.h"
-// #include "common_utils.h"
-// #include "topics.h"
-// #include "player.h"
-// #include "draw_box.h"
-// #include <string.h>
-// #include <ncurses.h>
-
-// void setupSocketConnection(int *server_sock, int *client_sock, int port);
-// char *setupTopic();
-
-// int main(int argc, char *argv[]){
-//     initscr();
-//     int rows = 125;
-//     int cols = 125;
-//     resize_term(rows, cols);
-//     int server_sock, client_sock, port_no, n;
-
-//     bool isGuessing = true;
-//     char buffer[MAX_STRING_SIZE];
-//     raw();
-//     keypad(stdscr, TRUE);
-
-//     // Draw a box around the terminal window
-//     box(stdscr, 0, 0);
-
-//     // Refresh the screen
-//     refresh();
-
-//     PrintFile("assets/title.txt");
-
-//     // Setup Connection
-//     ValidateArgs(argv[0], 2, argc);
-//     setupSocketConnection(&server_sock, &client_sock, atoi(argv[1]));
-
-//     struct Player player = CreatePlayer();
-
-//     // Setup Topic
-//     SendMessage(client_sock, setupTopic(), false);
-//     ReceiveAck(client_sock);
-
-//     // Setup Phrases
-//     SetPhrase(&player, client_sock); 
-//     SetGuessPhrase(&player, client_sock);
-
-//     PrintPlayer(player);
-
-//     while (player.score > 0) {
-//         if (isGuessing) {
-//             PrintLine("Your turn to guess.\n");
-//             char letter = InputLetter(&player);
-//             if (SetProgress(&player, letter, client_sock)) break;
-//         } else {
-//             PrintLine("Your opponent is guessing.\n");
-//             ReceiveMessage(client_sock, buffer, false);
-//             if (SetOpponentProgress(&player, *buffer, client_sock)) break;
-//         }
-//         isGuessing = !isGuessing;
-//         PrintLine("\n");
-//     }
-
-//     // Close Connection
-//     close(client_sock);
-//     close(server_sock);
-
-//     refresh();
-//     getch();
-//     endwin();
-    
-//     return 0; 
-// }
-
-// void setupSocketConnection(int *server_sock, int *client_sock, int port){
-//     struct sockaddr_in server_addr, client_addr;
-//     CreateSocket(server_sock);
-//     while (true) {
-//         server_addr = *CreateSocketAddress(port); 
-//         if (server_addr.sin_port > 0) {
-//             printf("%d,%d", *server_sock, server_addr.sin_port);
-//             break;
-//         } else if (framesCounter > 10) {
-//             DrawTextCenter(TextSubtext(BIND_ERROR, 0, framesCounter / 10 ), 290, 10, RED);
-//             DieWithError();
-//         }
-//         framesCounter++;
-//     }
-    
-  
-
-//     BindSocket(server_sock, &server_addr);
-//     // while (true){
-//     //     // Create Socket
-//     //     bool is_socket_created = CreateSocket(server_sock);
-//     //     if (!is_socket_created && framesCounter > 10) {
-//     //         DrawTextCenter(TextSubtext(SOCKET_ERROR, 0, framesCounter / 10 ), 270, 10, RED);
-//     //         DieWithError();
-//     //     } else if (is_socket_created) {
-//     //         DrawTextCenter(TextSubtext(CREATING_SOCKET, 0, framesCounter / 5 ), 270, 10, DARKGRAY);
-//     //         while (true) {
-//     //             // Create Socket Address
-//     //             server_addr = *CreateSocketAddress(port);
-//     //             if (server_addr.sin_port <= 0 && framesCounter > 10) {
-//     //                 DrawTextCenter(TextSubtext(BIND_ERROR, 0, framesCounter / 10 ), 290, 10, RED);
-//     //                 DieWithError();
-//     //             } else if (server_addr.sin_port >= 0) {
-//     //                 // Bind Socket
-//     //                 while (true){
-//     //                     bool is_socket_bound = BindSocket(server_sock, &server_addr);
-//     //                     if (!is_socket_bound && framesCounter > 10) {  
-//     //                         DrawTextCenter(TextSubtext(BIND_ERROR, 0, framesCounter / 10 ), 290, 10, RED);
-//     //                         DieWithError();
-//     //                     } else if (is_socket_bound) {
-//     //                         DrawTextCenter(TextSubtext(LISTENING_SOCKET, 0, framesCounter / 10 ), 290, 10, DARKGRAY);
-//     //                         break;
-//     //                     }
-//     //                     framesCounter++;
-//     //                 }
-//     //                 break;
-//     //             }
-//     //             printf("%d,%d", *server_sock, server_addr.sin_port);
-
-//     //             framesCounter++;
-//     //         }
-//     //         break;
-//     //     }
-
-//     //     framesCounter++;
-//     }
-
-    // while (server_addr.sin_port <= 0 && *server_sock <= 0) {
-    //     server_addr = *CreateSocketAddress(port);
-    //     if (server_addr.sin_port <= 0 && *server_sock <= 0 && framesCounter > 20) {
-    //         DrawTextCenter(TextSubtext(BIND_ERROR, 0, framesCounter / 10 ), 290, 10, RED);
-    //         DieWithError();
-    //     }
-    //     if (server_addr.sin_port >= 0 && *server_sock >= 0) {
-    //         printf("%d,%d", *server_sock, server_addr.sin_port);
-    //         // while (true){
-    //         //     if (BindSocket(server_sock, &server_addr)) {
-    //         //         DrawTextCenter(TextSubtext(LISTENING_SOCKET, 0, framesCounter / 10 ), 290, 10, DARKGRAY);
-    //         //         break;
-    //         //     } else if(framesCounter > 20) {
-    //         //         DrawTextCenter(TextSubtext(BIND_ERROR, 0, framesCounter / 10 ), 290, 10, RED);
-    //         //         DieWithError();
-    //         //     }
-    //         // }
-    //         break;
-    //     }
-
-    // }
-    
-    // socklen_t client_size = sizeof(client_addr);
-    // *client_sock = HandleNewConnection(*server_sock, &client_addr, &client_size);
-
-    // //napmss(500);
-    // PrintSysMessage(2, "Creating socket...");
-    // PrintSysMessage(1, "Socket created and listening to port.");
-    // PrintSysMessage(0, "Connected to Player 2.");
-    // //napmss(500);
-
-    // PrintSysMessage(3, "Creating socket...");
-    // PrintSysMessage(2, "Socket created and listening to port.");
-    // PrintSysMessage(1, "Connected to Player 2.");
-    // PrintSysMessage(0, "Press any key to continue...");
-    // getch();
-    // system("clear");   
-
 
