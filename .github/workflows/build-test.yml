@@ -18,6 +18,14 @@ jobs:
     - name: Install build dependencies
       run: sudo apt-get install build-essential libglfw3-dev libgles2-mesa-dev libasound2-dev
 
+    - name: Download and build Raylib
+      run: |
+        git clone https://github.com/raysan5/raylib.git
+        cd raylib
+        make
+        sudo make install
+        cd ..
+    
     - name: Test Compilation
       run: | 
         chmod +x compile.sh  # make sure the script is executable
