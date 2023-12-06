@@ -39,7 +39,7 @@ UNAME=$(uname)
 if [ "$UNAME" == "Linux" ]; then
     LIBS="$LIBS -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU"
 fi
-
+echo "Libraries: $LIBS"
 # compile
 gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES  \
     || { echo 'Server compilation failed'; exit 1; }
