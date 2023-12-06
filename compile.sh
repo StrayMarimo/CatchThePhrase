@@ -44,7 +44,7 @@ UNAME=$(uname)
 
 # Linux-specific settings
 if [ "$UNAME" == "Linux" ]; then
-    LIBS="$LIBS -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU -L./raylib/src "
+    LIBS="-ldl -lpthread -lm -lX11 -lXrandr -lXi -lGL -lGLU -L./raylib/src $LIBS"
 fi
 
 # Compile
