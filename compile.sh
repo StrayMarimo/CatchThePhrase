@@ -29,7 +29,6 @@ INCLUDE_DIRS="
     ${ROOT_HEADER}/utilities/
     ${ROOT_HEADER}/structs/
     ${ROOT_HEADER}/ui/
-    ${ROOT_HEADER}/raylib/src
 "
 
 # Add source files as needed
@@ -42,9 +41,11 @@ SRC_FILES="
 # Determine the operating system
 UNAME=$(uname)
 
+echo "Detected OS: $UNAME"
+
 # Linux-specific settings
 if [ "$UNAME" == "Linux" ]; then
-    LIBS="-ldl -lpthread -lm -lX11 -lXrandr -lXi -lGLU -L./raylib/src $LIBS"
+    LIBS="-I./raylib/src -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGLU -L./raylib/src $LIBS"
 fi
 
 # Compile
