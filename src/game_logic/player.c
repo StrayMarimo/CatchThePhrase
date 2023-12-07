@@ -73,6 +73,15 @@ bool IsPhraseGuessed(char *phrase, char *progress){
     return true;
 }
 
+bool IsMarkedSpot(char* phrase, char* progress, char letter) {
+    for (int i = 0; i < strlen(phrase); i++) {
+        if (toupper(letter) == phrase[i] && progress[i] == '^') {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool SetOpponentProgress(struct Player *player, int client_sock) {
     char buffer[MAX_STRING_SIZE];
     bool isLetterInPhrase = false;
@@ -125,6 +134,10 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
             isLetterInPhrase = true;
             player->progress[i] = letter;
         }
+    }
+
+     if (IsMarkedSpot(player->opponent_phrase, player->progress, letter)) {
+        AddSystemMessage(GUESS_MARKED_SPOT);
     }
 
     if (!isLetterInPhrase) {

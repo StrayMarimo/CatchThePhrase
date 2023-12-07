@@ -41,5 +41,6 @@
 #define OPPONENT_NOT_IN_PHRASE "System Message> Your opponent guessed a letter not in the phrase."
 #define PRINT_LETTER "System message> You guessed the letter "
 #define PRTINT_LETTER_OPPONENT "System message> Your opponent guessed the letter "
+#define GUESS_MARKED_SPOT "System message> You guessed a marked spot! "
 
 #endif
