@@ -1,15 +1,15 @@
 # Catch The Phrase
 
-# Installation
-sudo apt-get install libncurses5-dev libncursesw5-dev
-
 # Usage
 
 #### Compile:
 ``` ./compile.sh ```
 
 #### Run
-``` cd src ```
+``` cd src ```  
 ``` ./server <port> ```  
+
+    
+``` cd src ```  
 ``` ./client <host_name> <port>```
 
