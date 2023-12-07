@@ -22,6 +22,7 @@ ROOT_SRC="src/"
 SERVER_FILE="src/server.c"
 CLIENT_FILE="src/client.c"
 LIBS="-lraylib"
+LINKS=""
 
 # Add directories as needed
 INCLUDE_DIRS="
@@ -45,14 +46,15 @@ echo "Detected OS: $UNAME"
 
 # Linux-specific settings
 if [ "$UNAME" != "Darwin" ]; then
-    LIBS="-I./raylib/src -ldl -lpthread -lm -lX11 -lXrandr -lXi -lGLU -L./raylib/src $LIBS"
+    LIBS="-I./raylib/src $LIBS"
+    LINKS="-L./raylib/src -lraylib"
 fi
 
 # Compile
-gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES  \
+gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES $LINKS  \
     || { echo 'Server compilation failed'; exit 1; }
 echo "Server compiled successfully!"
 
-gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES \
+gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES $LINKS \
     || { echo 'Client compilation failed'; exit 1; }
 echo "Client compiled successfully!"
