@@ -1,7 +1,17 @@
 #include <sys/socket.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h> 
+#include <netdb.h>
+#include "common_utils.h"
+#include "raylib.h"
+#include "string_values.h"
+
 #ifndef SOCKET_CONNECTION_H
 #define SOCKET_CONNECTION_H
 
+extern int framesCounter;
 void CreateSocket(int *sock);
 
 // Server Side

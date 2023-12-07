@@ -1,7 +1,7 @@
 # Catch The Phrase
 
 # Installation
-sudo apt-get install libncurses5-dev libncursesw5-dev
+sudo apt-get install libraylib-dev
 
 # Usage
 
