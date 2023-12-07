@@ -1,17 +1,17 @@
 #include "draw.h"
 
 void DrawGameLayout(struct Player *player) {
-    DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
-    DrawRectangle((SCREEN_WIDTH - 30) / 2 + 20, 10, (SCREEN_WIDTH - 30) / 2, 300, BEIGE);
-    DrawRectangle(10, 320, (SCREEN_WIDTH - 30) / 3 * 2, 200, BEIGE);
-    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 320, (SCREEN_WIDTH - 30) / 3, 150, BEIGE);
-    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 480, (SCREEN_WIDTH - 30) / 3, 40, BEIGE);
-    DrawLine(30, 460, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 460, BLACK);
-    DrawLine(30, 461, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 461, BLACK);
+    DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BLACK);
+    DrawRectangle((SCREEN_WIDTH - 30) / 2 + 20, 10, (SCREEN_WIDTH - 30) / 2, 300, BLACK);
+    DrawRectangle(10, 320, (SCREEN_WIDTH - 30) / 3 * 2, 200, BLACK);
+    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 320, (SCREEN_WIDTH - 30) / 3, 150, BLACK);
+    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 480, (SCREEN_WIDTH - 30) / 3, 40, BLACK);
+    DrawLine(30, 460, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 460, WHITE);
+    DrawLine(30, 461, (SCREEN_WIDTH - 30) / 3 * 2 - 10, 461, WHITE);
 
-    DrawText(system_message3, 30, 380, 10, BLACK);
-    DrawText(system_message2, 30, 400, 10, BLACK);
-    DrawText(system_message, 30, 420, 10, MAROON);
+    DrawText(system_message3, 30, 380, 10, WHITE);
+    DrawText(system_message2, 30, 400, 10, WHITE);
+    DrawText(system_message, 30, 420, 10, YELLOW);
     DrawHealthBar(player->score, 30, SCREEN_HEIGHT / 2);
     DrawHealthBar(player->opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
     DrawLettersPressed(player->letters_pressed, 50);
@@ -22,11 +22,11 @@ void DrawGameLayout(struct Player *player) {
 }
 
 void DrawLettersPressed(char *lettersPressed, int offset) {
-    const float boxWidth = 35.0f;
-    const float boxHeight = 25.0f;
-    const float horizontalSpacing = 10.0f;
+    const float boxWidth = 20.0f;
+    const float boxHeight = 20.0f;
+    const float horizontalSpacing = 5.0f;
     const float verticalSpacing = 5.0f;
-    const int charsPerRow = 9;
+    const int charsPerRow = 13;
 
     for (int i = 0; i < 26; ++i) {
         int row = i / charsPerRow;
@@ -38,14 +38,13 @@ void DrawLettersPressed(char *lettersPressed, int offset) {
         char charBuffer[2] = { lettersPressed[i], '\0' };
         char formattedText[26];
         sprintf(formattedText, "%s", charBuffer);
-        DrawRectangle(xPos, yPos, boxWidth, boxHeight, LIGHTGRAY);
-        DrawText(formattedText, xPos + 15, yPos + 5, 20, BLACK);
+        DrawRectangle(xPos, yPos, boxWidth, boxHeight, WHITE);
+        DrawText(formattedText, xPos + 15, yPos + 5, 10, BLACK);
     }
 }
 
-
 void DrawTopic(char *topic) {
-    DrawText(topic, 30, 480, 20, MAROON);
+    DrawText(topic, 30, 480, 20, YELLOW);
 }
 
 void DrawHealthBar(int currentHealth, int x, int y) {
@@ -64,7 +63,7 @@ void DrawHealthBar(int currentHealth, int x, int y) {
 void DrawInputBox(char phraseBuffer[MAX_STRING_SIZE], Rectangle textBox, bool mouseOnText, int letterCount, int framesCounter) {
     DrawRectangleRec(textBox, LIGHTGRAY);
     if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
-    else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
+    else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, WHITE);
     DrawText(phraseBuffer, 30, 440, 10, BLACK);
     if (mouseOnText) {
         if (letterCount < MAX_STRING_SIZE)
