@@ -88,7 +88,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
     bool isLetterInPhrase = false;
 
     ReceiveMessage(client_sock, buffer);
-    SendAck(client_sock);
+    // SendAck(client_sock);
     
     if (isLetterPressed(player, buffer[0], false)) {
         AddSystemMessage(ALREADY_GUESSED);
@@ -110,7 +110,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
         AddSystemMessage(new_message);
     }
     
-    ReceiveMessage(client_sock, buffer);
+    // ReceiveMessage(client_sock, buffer);
     ReceiveRevealNotPresentLetter(player, client_sock);
     
     if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
@@ -126,7 +126,6 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
 
 bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess) {
     bool isLetterInPhrase = false;
-    ReceiveAck(client_sock);
 
     if (isLetterPressed(player, letter, true)) {
         AddSystemMessage(ALREADY_GUESSED);
@@ -154,6 +153,7 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
         AddSystemMessage(NOT_IN_PHRASE);
     }
 
+    // ReceiveAck(client_sock);
     *isGuessing = false;
     *isWaitingForGuess = true;
 
@@ -169,9 +169,9 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
 
 void RevealNotPresentLetter(struct Player *player, int client_sock){
     bool isRevealed = false;
-    char randomletter = 'A' + (rand() % 26);
+    char *letter;
     while(!isRevealed){
-        randomletter = 'A' + (rand() % 26);
+        char randomletter = 'A' + (rand() % 26);
         bool isPresent = false;
         // find if letter is not in phrase
         for(int i = 0; strlen(player->opponent_phrase); i++){
@@ -184,6 +184,7 @@ void RevealNotPresentLetter(struct Player *player, int client_sock){
             for(int i = 0; i < 26; i++){
                 if(player->letters_pressed[i] == randomletter){
                     player->letters_pressed[i] = randomletter;
+                    sprintf(letter, "%c", randomletter);
                     isRevealed = true;
                     break;
                 }
@@ -191,12 +192,12 @@ void RevealNotPresentLetter(struct Player *player, int client_sock){
         }
     }
     AddSystemMessage(REVEAL_A_LETTER);
-    SendMessage(client_sock, randomletter);
+    // SendMessage(client_sock, letter);
 }
 
 void ReceiveRevealNotPresentLetter(struct Player *player, int client_sock){
     char *buffer;
-    ReceiveMessage(client_sock, buffer);
+    // ReceiveMessage(client_sock, buffer);
     for(int i = 0; i < 26; i++){
         if(toupper(buffer[0]) == player->opponent_letters_pressed[i]){
             player->opponent_letters_pressed[i] = '*';
