@@ -41,7 +41,7 @@ char* EncryptPhrase(char* phrase) {
     srand((unsigned) time(&t));
     while(ctr < markedSpots){
         int i = rand() % phraseLength;
-        if(encryptedPhrase[i] != '^' && encryptedPhrase != ' '){
+        if(encryptedPhrase[i] != '^' && encryptedPhrase[i] != ' '){
             encryptedPhrase[i] = '^';
             ctr++;
         } 
