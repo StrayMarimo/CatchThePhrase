@@ -85,6 +85,15 @@ bool IsPhraseGuessed(char *phrase, char *progress){
     return true;
 }
 
+bool IsMarkedSpot(char* phrase, char* progress, char letter) {
+    for (int i = 0; i < strlen(phrase); i++) {
+        if (toupper(letter) == phrase[i] && progress[i] == '^') {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool SetOpponentProgress(struct Player *player, char letter, int client_sock) {
     bool isLetterInPhrase = false;
 
@@ -122,6 +131,10 @@ bool SetProgress(struct Player *player, char letter, int client_sock) {
             isLetterInPhrase = true;
             player->progress[i] = letter;
         }
+    }
+
+    if (IsMarkedSpot(player->opponent_phrase, player->progress, letter)) {
+        PrintLine("You guessed a marked spot!\n");
     }
 
     if (!isLetterInPhrase) {
@@ -179,4 +192,51 @@ char RevealALetter(struct Player *player){
     }
     return lettterToReveal;
 
+}
+
+bool CheckThreeInARow(struct Player *player) {
+    static int consecutiveCorrectGuesses = 0;
+
+    if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
+        consecutiveCorrectGuesses = 0;
+    } else {
+        consecutiveCorrectGuesses++;
+        if (consecutiveCorrectGuesses == 3) {
+            
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CheckandResetThreeInARow(struct Player *player) {
+    if (CheckThreeInARow(player)) {
+        consecutiveCorrectGuesses = 0;
+        return true;
+    }
+    return false;
+}
+
+void PowerUpTrigger(struct Player *player, int client_sock) {
+
+    char markedLetter = '\0';
+
+    for (int i =0; i < 26; i++) {
+        if (player->letters_pressed[i] != '*' &&
+            IsMarkedSpot(player->opponent_phrase, player->progress,player->letters_pressed[i])) {
+            markedLetter = player->letters_pressed[i];
+            break;
+        }
+    }
+    if (markedLetter != '\0' || CheckThreeInARow(player)) {
+        int randomInt = rand() % 2;
+
+        if (randomInt == 0) {
+            char letterToReveal = RevealALetter(player);
+            SetProgress(player, letterToReveal, client_sock);
+        } else {
+            RevealNotPresentLetter(player);
+        }
+    }
 }
