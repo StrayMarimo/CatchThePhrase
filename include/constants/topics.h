@@ -1,4 +1,4 @@
-#include "sizes.h"
+#include "int_values.h"
 
 #ifndef TOPICS_H
 #define TOPICS_H
@@ -54,7 +54,7 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
     "Vegetables",
     "Desserts and Sweets",
     "Healthy Eats",
-    "Comfort Foods",
+    "Comfort Food",
 
     "Phrases",
     "Colors",
