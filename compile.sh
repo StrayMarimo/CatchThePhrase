@@ -47,7 +47,7 @@ echo "Detected OS: $UNAME"
 # Linux-specific settings
 if [ "$UNAME" != "Darwin" ]; then
     LIBS="-I./raylib/src $LIBS"
-    LINKS="-L./raylib/src -lraylib"
+    LINKS="-L./raylib/src -lraylib -lm"
 fi
 
 # Compile
