@@ -197,4 +197,11 @@ bool CheckThreeInARow(struct Player *player) {
     return false;
 }
 
+bool CheckandResetThreeInARow(struct Player *player) {
+    if (CheckThreeInARow(player)) {
+        consecutiveCorrectGuesses = 0;
+        return true;
+    }
+    return false;
+}
 
