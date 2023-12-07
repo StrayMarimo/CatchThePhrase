@@ -1,15 +1,15 @@
 # Catch The Phrase
 
-# Installation
-sudo apt-get install libraylib-dev
-
 # Usage
 
 #### Compile:
 ``` ./compile.sh ```
 
 #### Run
-``` cd src ```
+``` cd src ```  
 ``` ./server <port> ```  
+
+    
+``` cd src ```  
 ``` ./client <host_name> <port>```
 
