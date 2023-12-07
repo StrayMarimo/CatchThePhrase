@@ -109,8 +109,9 @@ int main(int argc, char *argv[]) {
 
         switch (currentScreen) {
             case TITLE:
-                DrawTextCenter(PHRASE, 220, 20, MAROON);
-                DrawTextCenter(TextSubtext(PRESS_ENTER, 0, framesCounter / 5) ,250, 10, DARKGRAY);
+                ClearBackground(BLACK);
+                DrawTextCenter(PHRASE, 220, 50, WHITE);
+                DrawTextCenter(TextSubtext(PRESS_ENTER, 0, framesCounter / 5), 280, 20, DARKGRAY);
                 framesCounter++;
                 break;
             case GAMEPLAY:
@@ -119,18 +120,17 @@ int main(int argc, char *argv[]) {
                 DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 break;
             case GAMEOVER:
-                ClearBackground(RAYWHITE);
+                ClearBackground(BLACK);
                 strcpy(winner, WON);
-                strcat(winner, did_player1_won ? "1" : "2");
-                strcat(winner, " won!");
-                DrawTextCenter(winner, 220, 20, MAROON);
-                DrawTextCenter(EXITING, 250, 20, DARKGRAY);
+                strcat(winner, did_player1_won ? "PLAYER 1" : "PLAYER 2");
+                strcat(winner, " WON!");
+                DrawTextCenter(winner, 220, 20, GREEN);
+                DrawTextCenter(EXITING, 250, 10, DARKGRAY);
             default:
                 break;
         }
         EndDrawing();
     }
-
     CloseWindow();
     return 0;
 }
