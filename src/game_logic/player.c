@@ -6,6 +6,7 @@ struct Player CreatePlayer() {
     struct Player player;
     player.score = 100;
     player.opponent_score = 100;
+    player.consecutiveCorrectGuesses = 0;
     for(int i = 0; i < 26; i++){
         player.letters_pressed[i] = 'A' + i;
         player.opponent_letters_pressed[i] = 'A' + i;
@@ -195,4 +196,27 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
 //     }
 //     return lettterToReveal;
 
-// }
+//}
+
+bool CheckThreeInARow(struct Player *player) {
+    if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
+        player->consecutiveCorrectGuesses++;
+        if (player->consecutiveCorrectGuesses == 3) {
+            
+            return true;
+        }
+    } else {
+        player->consecutiveCorrectGuesses = 0;
+    }
+
+    return false;
+}
+
+bool CheckandResetThreeInARow(struct Player *player) {
+    if (CheckThreeInARow(player)) {
+        player->consecutiveCorrectGuesses = 0;
+        return true;
+    }
+    return false;
+}
+

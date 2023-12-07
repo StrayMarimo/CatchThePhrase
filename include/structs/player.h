@@ -17,6 +17,7 @@ struct Player {
     char opponent_progress[MAX_STRING_SIZE];
     char letters_pressed[26];
     char opponent_letters_pressed[26];
+    int consecutiveCorrectGuesses;
 };
 
 struct Player CreatePlayer();
