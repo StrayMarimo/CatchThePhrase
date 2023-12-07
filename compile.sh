@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$UNAME" != "Darwin" ]; then
+    sudo apt install libxcursor-dev -y
+    sudo apt install libxrandr-dev -y
+    sudo apt install libxinerama-dev -y
+    sudo apt install libxi-dev -y
+fi
+
 # Check if Raylib is already installed
 if [ ! -d "raylib" ]; then
     echo "Raylib not found, cloning..."
