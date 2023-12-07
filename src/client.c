@@ -98,30 +98,29 @@ int main(int argc,  char *argv[]){
             default:
                 break;
         }
-        BeginDrawing();
+        
+      BeginDrawing();
         ClearBackground(RAYWHITE);  
 
         switch (currentScreen) {
             case TITLE:
-                DrawTextCenter(PHRASE, 220, 20, MAROON);
-                DrawTextCenter(TextSubtext(PRESS_ENTER, 0, framesCounter / 5) ,250, 10, DARKGRAY);
+                ClearBackground(BLACK);
+                DrawTextCenter(PHRASE, 220, 50, WHITE);
+                DrawTextCenter(TextSubtext(PRESS_ENTER, 0, framesCounter / 5), 280, 20, DARKGRAY);
                 framesCounter++;
                 break;
             case GAMEPLAY:
                 DrawGameLayout(&player);
-                DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 DrawTopic(topic);
+                DrawInputBox(phraseBuffer, textBox, mouseOnText, letterCount, framesCounter);
                 break;
             case GAMEOVER:
-
-                ClearBackground(RAYWHITE);
+                ClearBackground(BLACK);
                 strcpy(winner, WON);
-                strcat(winner, did_player2_won ? "2" : "1");
-                strcat(winner, " won!");
-                DrawTextCenter(winner, 220, 20, MAROON);
-                DrawTextCenter(EXITING, 250, 20, DARKGRAY);
-                SendAck(client_sock);
-
+                strcat(winner, did_player2_won ? "PLAYER 2" : "PLAYER 1");
+                strcat(winner, " WON!");
+                DrawTextCenter(winner, 220, 20, GREEN);
+                DrawTextCenter(EXITING, 250, 10, DARKGRAY);
             default:
                 break;
         }
