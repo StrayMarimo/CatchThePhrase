@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
             case GAMEOVER:
                 ClearBackground(BLACK);
                 strcpy(winner, WON);
-                strcat(winner, did_player1_won ? "PLAYER 1" : "PLAYER 2");
+                strcat(winner, did_player1_won ? "1" : "2");
                 strcat(winner, " WON!");
                 DrawTextCenter(winner, 220, 20, GREEN);
                 DrawTextCenter(EXITING, 250, 10, DARKGRAY);
