@@ -5,27 +5,32 @@
 #include <string.h>
 #include <stdbool.h>
 #include "common_utils.h"
-void SendMessage(int sock, char *buffer) {
-    int n;
+#include "socket_communication.h"
 
-    n = send(sock, buffer, strlen(buffer), 0);
-    if (n < 0) 
-        DieWithError("Error: send() Failed.\n");
+void SendMessage(int socket, const char *message) {
+    size_t len = strlen(message);
+    send(socket, &len, sizeof(size_t), 0); 
+    send(socket, message, len, 0);  
 }
 
-void ReceiveMessage(int socket, char* buffer) {
-    int n;
-    
-    n = recv(socket, buffer, MAX_STRING_SIZE - 1, 0);
-    if (n < 0) 
-        DieWithError("Error: recv() Failed.\n");
+void ReceiveMessage(int socket, char *message) {
+    size_t len;
+    recv(socket, &len, sizeof(size_t), 0); 
+    recv(socket, message, len, 0);          
+    message[len] = '\0';           
 }
 
 void SendAck(int socket) {
-    send(socket, "ACK", 3, 0);
+    char *message = "ACK";
+    size_t len = strlen(message);
+    send(socket, &len, sizeof(size_t), 0); 
+    send(socket, message, len, 0);  
 }
 
 void ReceiveAck(int socket) {
-    char buffer[MAX_STRING_SIZE];
-    recv(socket, buffer, MAX_STRING_SIZE - 1, 0);
+    char *message;
+    size_t len;
+    recv(socket, &len, sizeof(size_t), 0); 
+    recv(socket, message, len, 0);
+    message[len] = '\0';  
 }

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "socket_communication.h"
 #include <string.h>
+#include "power_up.h"
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -25,7 +26,7 @@ void PrintPlayer(struct Player player);
 void SetPhrase(struct Player *player, int client_sock);
 void SetGuessPhrase(struct Player *player, int client_sock);
 void PowerUpTrigger(struct Player *player, int client_sock);
-// char InputLetter(struct Player *player);
+void RevealALetter(struct Player *player, int client_sock, bool *isGuessing, bool *isWaitingForGuess);
 void ReceiveRevealNotPresentLetter(struct Player *player, int client_sock);
 void RevealNotPresentLetter(struct Player *player, int client_sock);
 bool isLetterPressed(struct Player *player, char letter, bool isPlayer1);

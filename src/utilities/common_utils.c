@@ -140,11 +140,10 @@ bool ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount,
         *framesCounter = 0;
         *mouseOnText = false;
 
-        if (SetProgress(player, phraseBuffer[0], client_sock, isGuessing, isWaitingForGuess)) {
-             isGameOver = true;
-        }
+        if (SetProgress(player, toupper(phraseBuffer[0]), client_sock, isGuessing, isWaitingForGuess)) {
+            isGameOver = true;
+        } else AddSystemMessage(OPPONENTS_TURN);
 
-        SendMessage(client_sock, phraseBuffer);
         while((*letterCount) > 0) {
             (*letterCount)--;
             if (*letterCount < 0) *letterCount = 0;
