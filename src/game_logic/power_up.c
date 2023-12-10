@@ -24,36 +24,51 @@ bool IsMarkedSpot(struct Player *player, char letter, bool isPlayer) {
 
 void RevealNotPresentLetter(struct Player *player, int client_sock){
     bool isRevealed = false;
+    bool isPresent = true;
     char *letter;
-    while(!isRevealed){
-        char randomletter = 'A' + (rand() % 26);
-        bool isPresent = false;
+    char randomletter;
+    time_t t;
+    srand((unsigned) time (&t));
+    while(isPresent){
+        int randIndex = rand() % 26;
+        randomletter = player->letters_pressed[randIndex];
+        if (randomletter == '*')
+            continue;
+        isPresent = false;
         // find if letter is not in phrase
-        for(int i = 0; strlen(player->opponent_phrase); i++){
+        for(int i = 0; i < strlen(player->opponent_phrase); i++){
             if(randomletter == player->opponent_phrase[i]){
                 isPresent = true;
                 break;
             }
         }
-        if(!isPresent){
-            for(int i = 0; i < 26; i++){
-                if(player->letters_pressed[i] == randomletter){
-                    player->letters_pressed[i] = randomletter;
-                    sprintf(letter, "%c", randomletter);
-                    isRevealed = true;
-                    break;
-                }
-            }
+    }
+
+    for(int i = 0; i < 26; i++){
+        if(player->letters_pressed[i] == randomletter){
+            player->letters_pressed[i] = '*';
+            break;
         }
     }
-    AddSystemMessage(REVEAL_A_LETTER);
+    char new_message[MAX_STRING_SIZE] = REVEAL_NOT_PRESENT_LETTER;
+    sprintf(new_message, "%s%c", new_message, randomletter);
+    AddSystemMessage(new_message);
+
+    char letterMsg[MAX_STRING_SIZE];
+    sprintf(letterMsg, "%c", randomletter);
+    SendMessage(client_sock, letterMsg);
 }
 
 void ReceiveRevealNotPresentLetter(struct Player *player, int client_sock){
-    char *buffer;
+    char buffer[MAX_STRING_SIZE];
+    ReceiveMessage(client_sock, buffer);
+    char new_message[MAX_STRING_SIZE] = REVEAL_NOT_PRESENT_LETTER_OPPONENT;
+    sprintf(new_message, "%s%c", new_message, buffer[0]);
+    AddSystemMessage(new_message);
     for(int i = 0; i < 26; i++){
         if(toupper(buffer[0]) == player->opponent_letters_pressed[i]){
             player->opponent_letters_pressed[i] = '*';
+            break;
         }
     }
 }
@@ -124,11 +139,9 @@ bool CheckandResetThreeInARow(struct Player *player) {
 //     int randomInt = rand() % 2;
 
 //         if (randomInt == 0) {
-//             AddSystemMessage(REVEAL_A_LETTER); 
-//             // RevealALetter(player);
+//             RevealALetter(player, );
 //         } else {
-//             AddSystemMessage(REVEAL_NOT_PRESENT_LETTER);
-//             // RevealNotPresentLetter(player,client_sock);
+//             RevealNotPresentLetter(player,client_sock);
 //         }
 //         RevealALetter(player);
 // }

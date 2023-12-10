@@ -7,6 +7,8 @@ struct Player CreatePlayer() {
     player.score = 100;
     player.opponent_score = 100;
     player.consecutiveCorrectGuesses = 0;
+    player.consecutiveCorrectGuessesOpponent = 0;
+
     for(int i = 0; i < 26; i++){
         player.letters_pressed[i] = 'A' + i;
         player.opponent_letters_pressed[i] = 'A' + i;
@@ -53,8 +55,16 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
 }
 
 bool isLetterPressed(struct Player *player, char letter, bool isPlayer){
+    char letters_pressed[MAX_STRING_SIZE];
+    if (isPlayer) {
+        strcpy(letters_pressed, player->letters_pressed);
+    }
+    else {
+        strcpy(letters_pressed, player->opponent_letters_pressed);
+    }
+    
     for (int i = 0; i < 26; i++){
-        if(toupper(letter) == player->letters_pressed[i]){
+        if(toupper(letter) == letters_pressed[i]){
             if (isPlayer)
                 player->letters_pressed[i] = '*';
             else
@@ -125,14 +135,22 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
         ReceiveRevealLetter(player, client_sock);
     }
 
-
     if (!isLetterInPhrase) {
         AddSystemMessage(OPPONENT_NOT_IN_PHRASE);
+        player->consecutiveCorrectGuessesOpponent = 0;
         player->opponent_score -=10;
+    } else player->consecutiveCorrectGuessesOpponent++;
+
+
+    if (player->consecutiveCorrectGuessesOpponent == 3) {
+        AddSystemMessage(THREE_IN_A_ROW_OPPONENT);
+        ReceiveRevealNotPresentLetter(player, client_sock);
+        player->consecutiveCorrectGuessesOpponent = 0;
     }
     
     if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
         AddSystemMessage(OPPONENT_WON);
+        SendAck(client_sock);
         return true;
     }
     
@@ -169,7 +187,14 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
 
     if (!isLetterInPhrase) {
         player->score -= 10;
+        player->consecutiveCorrectGuesses = 0;
         AddSystemMessage(NOT_IN_PHRASE);
+    } else player->consecutiveCorrectGuesses++;
+
+    if (player->consecutiveCorrectGuesses == 3) {
+        AddSystemMessage(THREE_IN_A_ROW);
+        RevealNotPresentLetter(player, client_sock);
+        player->consecutiveCorrectGuesses = 0;
     }
 
     *isGuessing = false;

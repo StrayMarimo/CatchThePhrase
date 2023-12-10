@@ -19,6 +19,7 @@ struct Player {
     char letters_pressed[26];
     char opponent_letters_pressed[26];
     int consecutiveCorrectGuesses;
+    int consecutiveCorrectGuessesOpponent;
 };
 
 struct Player CreatePlayer();
