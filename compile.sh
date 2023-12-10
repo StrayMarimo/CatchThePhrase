@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Determine the operating system
+UNAME=$(uname)
+
 if [ "$UNAME" != "Darwin" ]; then
     sudo apt install libxcursor-dev -y
     sudo apt install libxrandr-dev -y
@@ -45,9 +48,6 @@ SRC_FILES="
     ${ROOT_SRC}game_logic/*.c
     ${ROOT_SRC}ui/*.c
 "
-
-# Determine the operating system
-UNAME=$(uname)
 
 echo "Detected OS: $UNAME"
 

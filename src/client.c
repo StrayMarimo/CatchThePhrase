@@ -56,7 +56,7 @@ int main(int argc,  char *argv[]){
                     getTopic(client_sock, topic); 
                 }
                 break;
-            case GAMEPLAY:
+            case GAMEPLAY: 
                 // Listen to ESC button
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
 
@@ -75,7 +75,7 @@ int main(int argc,  char *argv[]){
                     
                 }
 
-                if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
+                if (CheckCollisionPointRec(GetMousePosition(), textBox) && (is_setting_phrase || is_guessing)) mouseOnText = true;
                 else mouseOnText = false;
 
 

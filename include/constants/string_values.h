@@ -40,7 +40,14 @@
 #define OPPONENTS_TURN "System Message> Waiting for opponent to guess a letter..."
 #define OPPONENT_NOT_IN_PHRASE "System Message> Your opponent guessed a letter not in the phrase."
 #define PRINT_LETTER "System message> You guessed the letter "
-#define PRTINT_LETTER_OPPONENT "System message> Your opponent guessed the letter "
-#define GUESS_MARKED_SPOT "System message> You guessed a marked spot! "
-
+#define PRINT_LETTER_OPPONENT "System message> Your opponent guessed the letter "
+#define GUESS_MARKED_SPOT "System message> You guessed a marked spot!"
+#define GUESS_MARKED_SPOT_OPPONENT "System message> Your opponent guessed a marked spot!"
+#define THREE_IN_A_ROW "System message> You guessed three letters in a row!"
+#define THREE_IN_A_ROW_OPPONENT "System message> Your opponent guessed three letters in a row!"
+#define REVEAL_A_LETTER "System message> A letter has been revealed: "
+#define REVEAL_A_LETTER_OPPONENT "System message> Your opponent had a letter revealed: "
+#define REVEAL_NOT_PRESENT_LETTER "System message> A letter not in the phrase has been revealed: "
+#define REVEAL_NOT_PRESENT_LETTER_OPPONENT "System message> Your opponent had a letter revealed not in the phrase: "
+#define POWER_UP_TRIGGERED "System message> You triggered a power up!"
 #endif

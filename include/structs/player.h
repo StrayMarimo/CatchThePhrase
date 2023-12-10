@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "socket_communication.h"
 #include <string.h>
+#include "power_up.h"
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -18,13 +19,15 @@ struct Player {
     char letters_pressed[26];
     char opponent_letters_pressed[26];
     int consecutiveCorrectGuesses;
+    int consecutiveCorrectGuessesOpponent;
 };
 
 struct Player CreatePlayer();
 void PrintPlayer(struct Player player);
 void SetPhrase(struct Player *player, int client_sock);
 void SetGuessPhrase(struct Player *player, int client_sock);
-// char InputLetter(struct Player *player);
+bool IsPhraseGuessed(char *phrase, char *progress);
+bool UpdateProgress(struct Player *player, char letter, bool isPlayer);
 bool isLetterPressed(struct Player *player, char letter, bool isPlayer1);
 bool SetOpponentProgress(struct Player *player, int client_sock);
 bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess);

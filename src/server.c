@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
                 break;
             case GAMEPLAY:
                 if (IsKeyPressed(KEY_ESCAPE)) currentScreen = TITLE;
-                
                 if (is_setting_topic) ToggleFlags(&is_setting_topic, &is_setting_phrase);
 
                 if (is_receiving_phrase) {

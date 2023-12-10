@@ -43,8 +43,10 @@ void DrawLettersPressed(char *lettersPressed, int offset) {
         float textX = xPos + (boxWidth - MeasureText(formattedText, 10)) / 2;
         float textY = yPos + (boxHeight - 10) / 2;
 
-
-        DrawRectangle(xPos, yPos, boxWidth, boxHeight, WHITE);
+        if (lettersPressed[i] == '*')
+            DrawRectangle(xPos, yPos, boxWidth, boxHeight, GRAY);
+        else 
+            DrawRectangle(xPos, yPos, boxWidth, boxHeight, WHITE);
         DrawText(formattedText, textX, textY, 10, BLACK);
     }
 }

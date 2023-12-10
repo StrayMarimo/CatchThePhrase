@@ -18,7 +18,6 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
     "Movie Title - Documentary",
     "Disney Animated Classics",
 
-    "Song Title - Electronic Dance Music",
     "Song Title - Rock",
     "Song Title - Rhythm and Blues",
     "Song Title - Country",
@@ -67,7 +66,7 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
     "Cities of the Philippines",
     "Provinces of the Philippines",
     "Regions of the Philippines",
-    "Colleges and Universities in the Philippines",
+    "Colleges/Universities in the Philippines",
     "Capital Cities of Countries",
 
     "Popular Sports",
@@ -92,7 +91,6 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
     "Esports Organizations",
     "Professional Players",
 
-    "Classical, Modern, & Contemporary Artists",
     "Famous Youtubers",
     "Famous Vloggers",
     "K-drama Artists",
@@ -100,8 +98,6 @@ char topics[MAX_TOPIC][MAX_STRING_SIZE] = {
     "Hollywood Actress",
 
     "Art Movements and Styles",
-
-    "Grand Prix Circuits",
     
     "Famous Brands",
     "Famous Filipino Brands",
