@@ -43,7 +43,7 @@
 #define PRINT_LETTER_OPPONENT "System message> Your opponent guessed the letter "
 #define GUESS_MARKED_SPOT "System message> You guessed a marked spot!"
 #define GUESS_MARKED_SPOT_OPPONENT "System message> Your opponent guessed a marked spot!"
-#define REVEAL_A_LETTER "System message> A letter has been revealed!"
+#define REVEAL_A_LETTER "System message> A letter has been revealed: "
 #define REVEAL_A_LETTER_OPPONENT "System message> Your opponent had a letter revealed: "
 #define REVEAL_NOT_PRESENT_LETTER "System message> A letter not in the phrase has been revealed!"
 #define REVEAL_NOT_PRESENT_LETTER_OPPONENT "System message> Your opponent had a letter revealed not in the phrase!"
