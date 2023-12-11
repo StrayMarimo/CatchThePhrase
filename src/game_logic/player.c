@@ -115,7 +115,7 @@ bool UpdateProgress(struct Player *player, char letter, bool isPlayer){
     return isLetterInPhrase;
 }
 
-bool SetOpponentProgress(struct Player *player, int client_sock) {
+bool SetOpponentProgress(struct Player *player, int client_sock, struct Audios *audio) {
     char buffer[MAX_STRING_SIZE];
     bool isLetterInPhrase = false;
     bool isMarkedSpot = false;
@@ -135,23 +135,29 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
     isLetterInPhrase = UpdateProgress(player, buffer[0], false);
 
     if (isMarkedSpot) {
+        PlaySound(audio->powerup);
         ReceiveRevealLetter(player, client_sock);
     }
 
     if (!isLetterInPhrase) {
         AddSystemMessage(OPPONENT_NOT_IN_PHRASE);
         player->consecutiveCorrectGuessesOpponent = 0;
-        player->opponent_score -=30;
-    } else player->consecutiveCorrectGuessesOpponent++;
+        player->opponent_score -=15;
+        PlaySound(audio->wrong);
+    } else {
+        player->consecutiveCorrectGuessesOpponent++;
+    }
 
 
     if (player->consecutiveCorrectGuessesOpponent == 3) {
+        PlaySound(audio->powerup);
         AddSystemMessage(THREE_IN_A_ROW_OPPONENT);
         ReceiveRevealNotPresentLetter(player, client_sock);
         player->consecutiveCorrectGuessesOpponent = 0;
     }
     
     if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
+        PlaySound(audio->game_over);
         AddSystemMessage(OPPONENT_WON);
         SendAck(client_sock);
         return true;
@@ -163,7 +169,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
 }
 
 
-bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess) {
+bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess, struct Audios *audio) {
     bool isLetterInPhrase = false;
     bool isMarkedSpot = false;
 
@@ -177,16 +183,22 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
     }
     isLetterInPhrase =  UpdateProgress(player, letter, true);
 
-    if (isMarkedSpot)
+    if (isMarkedSpot) {
+        PlaySound(audio->powerup);
         RevealALetter(player, client_sock, isGuessing, isWaitingForGuess);
+    }
 
     if (!isLetterInPhrase) {
-        player->score -= 30;
+        player->score -= 15;
         player->consecutiveCorrectGuesses = 0;
         AddSystemMessage(NOT_IN_PHRASE);
-    } else player->consecutiveCorrectGuesses++;
+        PlaySound(audio->wrong);
+    } else {
+        player->consecutiveCorrectGuesses++;
+    }
 
     if (player->consecutiveCorrectGuesses == 3) {
+        PlaySound(audio->powerup);
         AddSystemMessage(THREE_IN_A_ROW);
         RevealNotPresentLetter(player, client_sock);
         player->consecutiveCorrectGuesses = 0;
@@ -197,6 +209,7 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
 
 
     if (IsPhraseGuessed(player->progress, player->opponent_phrase)) {
+        PlaySound(audio->game_over);
         AddSystemMessage(PLAYER_WON);
         return true;
     }

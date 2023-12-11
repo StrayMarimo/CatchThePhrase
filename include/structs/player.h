@@ -3,6 +3,7 @@
 #include "socket_communication.h"
 #include <string.h>
 #include "power_up.h"
+#include "sound_manager.h"
 #include <stdbool.h>
 
 #ifndef PLAYER_H
@@ -32,6 +33,6 @@ bool IsPhraseGuessed(char *phrase, char *progress);
 bool UpdateProgress(struct Player *player, char letter, bool isPlayer);
 bool isLetterPressed(struct Player *player, char letter);
 void UpdateLetterPressed(struct Player *player, char letter, bool isPlayer);
-bool SetOpponentProgress(struct Player *player, int client_sock);
-bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess);
+bool SetOpponentProgress(struct Player *player, int client_sock, struct Audios *audio);
+bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGuessing, bool *isWaitingForGuess, struct Audios *audio);
 #endif
