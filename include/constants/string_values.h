@@ -17,6 +17,8 @@
 #define PLAYER_CONNECTED "Player connected."
 #define WAITING_FOR_TOPIC "Waiting for topic..."
 #define PRESS_ENTER "Press enter to continue..."
+#define YOUR_TURN "YOUR TURN"
+#define OPPONENT_TURN "OPPONENT'S TURN"
 
 #define SOCKET_ERROR "Error: socket() Failed."
 #define BIND_ERROR "Error: bind() Failed."

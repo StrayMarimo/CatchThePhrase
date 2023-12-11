@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER1);
-    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
+    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 20  };
     bool mouseOnText = false;
     GameScreen currentScreen = TITLE;
     SetTargetFPS(60);
@@ -70,9 +70,11 @@ int main(int argc, char *argv[]) {
                     ToggleFlags(&is_receiving_phrase, &is_guessing);
                     framesCounter = 0;
                     AddSystemMessage(GUESS_PHRASE);
+                    strcpy(player.turn, YOUR_TURN);
                 }
 
                 if (is_waiting_for_guess) {
+                    strcpy(player.turn, OPPONENTS_TURN);
                     if (!SetOpponentProgress(&player, client_sock))
                         ToggleFlags(&is_waiting_for_guess, &is_guessing);
                     else currentScreen = GAMEOVER;
@@ -86,7 +88,7 @@ int main(int argc, char *argv[]) {
                 }  else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
                 if (mouseOnText && is_guessing) { 
-                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess, client_sock, &player)) {
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess, client_sock, &player, true)) {
                         ReceiveAck(client_sock);
                         did_player1_won = true;
                         currentScreen = GAMEOVER;

@@ -18,6 +18,7 @@ struct Player CreatePlayer() {
     strcpy(player.opponent_phrase, "");
     strcpy(player.progress, "");
     strcpy(player.opponent_progress, "");
+    strcpy(player.turn, "");
 
     return player;
 }
@@ -54,25 +55,31 @@ void SetGuessPhrase(struct Player *player, int client_sock) {
     ReceiveMessage(client_sock, player->progress);
 }
 
-bool isLetterPressed(struct Player *player, char letter, bool isPlayer){
-    char letters_pressed[MAX_STRING_SIZE];
-    if (isPlayer) {
-        strcpy(letters_pressed, player->letters_pressed);
-    }
-    else {
-        strcpy(letters_pressed, player->opponent_letters_pressed);
-    }
-    
+bool isLetterPressed(struct Player *player, char letter){
     for (int i = 0; i < 26; i++){
-        if(toupper(letter) == letters_pressed[i]){
-            if (isPlayer)
-                player->letters_pressed[i] = '*';
-            else
-                player->opponent_letters_pressed[i] = '*';
+        if(toupper(letter) == toupper(player->letters_pressed[i])){
             return false;
         } 
     }
+    AddSystemMessage(ALREADY_GUESSED);
     return true;
+}
+
+void UpdateLetterPressed(struct Player *player, char letter, bool isPlayer){
+    char letters_pressed[MAX_STRING_SIZE];
+    if (isPlayer)
+        strcpy(letters_pressed, player->letters_pressed);
+    else 
+        strcpy(letters_pressed, player->opponent_letters_pressed);
+    for (int i = 0; i < 26; i++){
+        if(toupper(letter) == letters_pressed[i]){
+            if (isPlayer) 
+                player->letters_pressed[i] = '*';
+            else 
+                player->opponent_letters_pressed[i] = '*';
+            break;
+        } 
+    }
 }
 
 bool IsPhraseGuessed(char *phrase, char *progress){
@@ -88,6 +95,7 @@ bool IsPhraseGuessed(char *phrase, char *progress){
 bool UpdateProgress(struct Player *player, char letter, bool isPlayer){
     bool isLetterInPhrase = false;
     char phrase[MAX_STRING_SIZE];
+    UpdateLetterPressed(player, letter, isPlayer);
     if (isPlayer) {
         strcpy(phrase, player->opponent_phrase);
     }
@@ -114,12 +122,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
 
     ReceiveMessage(client_sock, buffer);
 
-    if (isLetterPressed(player, buffer[0], false)) {
-        AddSystemMessage(ALREADY_GUESSED);
-        AddSystemMessage(GUESS_PHRASE);
-        return false;
-    }
-
+    strcpy(player->turn, YOUR_TURN);
     char new_message[MAX_STRING_SIZE] = PRINT_LETTER_OPPONENT;
     sprintf(new_message, "%s%c", new_message, buffer[0]);
     AddSystemMessage(new_message);
@@ -138,7 +141,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock) {
     if (!isLetterInPhrase) {
         AddSystemMessage(OPPONENT_NOT_IN_PHRASE);
         player->consecutiveCorrectGuessesOpponent = 0;
-        player->opponent_score -=10;
+        player->opponent_score -=30;
     } else player->consecutiveCorrectGuessesOpponent++;
 
 
@@ -168,25 +171,17 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
     sprintf(phraseBuffer, "%c", letter);
     SendMessage(client_sock, phraseBuffer);
 
-    if (isLetterPressed(player, letter, true)) {
-        AddSystemMessage(ALREADY_GUESSED);
-        AddSystemMessage(GUESS_PHRASE);
-        return false;
-    }
-
     if (IsMarkedSpot(player, letter, true)) {
         AddSystemMessage(GUESS_MARKED_SPOT);
         isMarkedSpot = true;
     }
     isLetterInPhrase =  UpdateProgress(player, letter, true);
 
-    if (isMarkedSpot) {
+    if (isMarkedSpot)
         RevealALetter(player, client_sock, isGuessing, isWaitingForGuess);
-        // PowerUpTrigger(player, client_sock, isGuessing, isWaitingForGuess);
-    }
 
     if (!isLetterInPhrase) {
-        player->score -= 10;
+        player->score -= 30;
         player->consecutiveCorrectGuesses = 0;
         AddSystemMessage(NOT_IN_PHRASE);
     } else player->consecutiveCorrectGuesses++;

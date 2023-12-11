@@ -43,7 +43,7 @@ int main(int argc,  char *argv[]){
     
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER2);
-    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
+    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 20};
     bool mouseOnText = false;
 
     GameScreen currentScreen = TITLE;
@@ -84,7 +84,7 @@ int main(int argc,  char *argv[]){
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
                 if (mouseOnText && is_guessing) { 
-                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess,  client_sock, &player)) {
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess,  client_sock, &player, false)) {
                         did_player2_won = true;
                         currentScreen = GAMEOVER;
                     }

@@ -1,24 +1,41 @@
 #include "draw.h"
 
+void DrawTextCenter(const char *text, int y, int font, Color color) {
+    int textWidth = MeasureText(text, font);
+    int x = (GetScreenWidth() - textWidth) / 2;
+    DrawText(text, x, y, font, color);
+}
+
+void DrawTextCenterOfBoxWidth(const char *text, int y, int font, Color color, int boxWidth, int xOffset) {
+    int textWidth = MeasureText(text, font);
+    int x = (boxWidth - textWidth) / 2;
+    DrawText(text, xOffset + x, y, font, color);
+}
+
+
 void DrawGameLayout(struct Player *player) {
 
     DrawRectangle(10, 10, (SCREEN_WIDTH - 30) / 2, 300, BLACK);
     DrawRectangle((SCREEN_WIDTH - 30) / 2 + 20, 10, (SCREEN_WIDTH - 30) / 2, 300, BLACK);
     DrawRectangle(10, 320, (SCREEN_WIDTH - 30) / 3 * 2, 200, BLACK);
-    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 320, (SCREEN_WIDTH - 30) / 3, 150, BLACK);
-    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 480, (SCREEN_WIDTH - 30) / 3, 40, BLACK);
-    DrawLine(30, 460, (SCREEN_WIDTH - 60) / 3 * 2 - 10, 460, WHITE);
-    DrawLine(30, 461, (SCREEN_WIDTH - 60) / 3 * 2 - 10, 461, WHITE);
+    DrawRectangle((SCREEN_WIDTH - 30) / 3 * 2 + 20, 320, (SCREEN_WIDTH - 30) / 3, 200, BLACK);
+    DrawTextCenterOfBoxWidth(player->turn, 400, 20, YELLOW, (SCREEN_WIDTH - 30) / 3, (SCREEN_WIDTH - 30) / 3 * 2 + 20);
+    if (strcmp(player->turn, "") != 0)
+        DrawTextCenterOfBoxWidth("TO GUESS", 430, 20, YELLOW, (SCREEN_WIDTH - 30) / 3, (SCREEN_WIDTH - 30) / 3 * 2 + 20);
+
+    DrawTextCenterOfBoxWidth("YOU", 40, 25, YELLOW, (SCREEN_WIDTH - 30) / 2, 10);
+    DrawTextCenterOfBoxWidth("OPPONENT", 40, 25, YELLOW, (SCREEN_WIDTH - 30) / 2, (SCREEN_WIDTH - 30) / 2 + 20);
 
     DrawText(system_message3, 30, 380, 10, WHITE);
     DrawText(system_message2, 30, 400, 10, WHITE);
     DrawText(system_message, 30, 420, 10, YELLOW);
     DrawHealthBar(player->score, 30, SCREEN_HEIGHT / 2);
     DrawHealthBar(player->opponent_score, (SCREEN_WIDTH - 30) / 2 + 40, SCREEN_HEIGHT / 2);
-    DrawLettersPressed(player->letters_pressed, 50);
-    DrawLettersPressed(player->opponent_letters_pressed, 520);
-    DrawText(player->opponent_progress, (SCREEN_WIDTH - 30) / 2 + 50, 50, 20, WHITE);
-    DrawText(player->progress, 80, 50, 20, WHITE);
+    DrawLettersPressed(player->letters_pressed, 80);
+    DrawLettersPressed(player->opponent_letters_pressed, 550);
+
+    DrawTextCenterOfBoxWidth(player->progress, 100, 20, WHITE, (SCREEN_WIDTH - 30) / 2, 10);
+    DrawTextCenterOfBoxWidth(player->opponent_progress, 100, 20, WHITE, (SCREEN_WIDTH - 30) / 2, (SCREEN_WIDTH - 30) / 2 + 20);
     
 }
 
@@ -73,12 +90,12 @@ void DrawHealthBar(int currentHealth, int x, int y) {
 
 void DrawInputBox(char phraseBuffer[MAX_STRING_SIZE], Rectangle textBox, bool mouseOnText, int letterCount, int framesCounter) {
     DrawRectangleRec(textBox, LIGHTGRAY);
-    if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
+    if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, LIGHTGRAY);
     else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, WHITE);
-    DrawText(phraseBuffer, 30, 440, 10, BLACK);
+    DrawText(phraseBuffer, 30, 450, 10, BLACK);
     if (mouseOnText) {
         if (letterCount < MAX_STRING_SIZE)
             if (((framesCounter/20)%2) == 0) 
-                DrawText("_", (int)textBox.x + 7 + MeasureText(phraseBuffer, 10), (int)textBox.y, 10, MAROON);
-                }
+                DrawText("_", (int)textBox.x + MeasureText(phraseBuffer, 10), (int)textBox.y + 10, 10, DARKGRAY);
+    }
 }

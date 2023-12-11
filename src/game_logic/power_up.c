@@ -81,7 +81,7 @@ void RevealALetter(struct Player *player, int client_sock, bool *isGuessing, boo
     while(!isDone){
         int i = rand() % strlen(player->opponent_phrase);
         if(player->progress[i] != player->opponent_phrase[i] && 
-            !isLetterPressed(player, player->opponent_phrase[i], true) && 
+            !isLetterPressed(player, player->opponent_phrase[i]) && 
             player->progress[i] != '^'){
             lettterToReveal = player->opponent_phrase[i];
             isDone = true;
