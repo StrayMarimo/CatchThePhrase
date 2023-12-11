@@ -8,6 +8,7 @@
 #include "common_utils.h"
 #include "draw.h"
 #include "player.h"
+#include "sound_manager.h"
 #include <string.h>
 #include "raylib.h"
 #include "string_values.h"
@@ -43,7 +44,10 @@ int main(int argc,  char *argv[]){
     
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER2);
-    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
+    InitAudioDevice();
+
+    struct Audios audio = LoadAudios(); 
+    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 20};
     bool mouseOnText = false;
 
     GameScreen currentScreen = TITLE;
@@ -53,6 +57,7 @@ int main(int argc,  char *argv[]){
             case TITLE:
                 if (IsKeyPressed(KEY_ENTER)) {
                     currentScreen = GAMEPLAY;
+                    PlaySound(audio.loading);
                     getTopic(client_sock, topic); 
                 }
                 break;
@@ -69,7 +74,7 @@ int main(int argc,  char *argv[]){
                 }
 
                 if (is_waiting_for_guess) {
-                    if (!SetOpponentProgress(&player, client_sock))
+                    if (!SetOpponentProgress(&player, client_sock, &audio))
                         ToggleFlags(&is_waiting_for_guess, &is_guessing);
                     else currentScreen = GAMEOVER;
                     
@@ -80,11 +85,11 @@ int main(int argc,  char *argv[]){
 
 
                 if (mouseOnText && is_setting_phrase) 
-                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_waiting_for_guess, &framesCounter, &mouseOnText, client_sock, &player, false);
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_waiting_for_guess, &framesCounter, &mouseOnText, client_sock, &player, false, &audio);
                 else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
                 if (mouseOnText && is_guessing) { 
-                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess,  client_sock, &player)) {
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess,  client_sock, &player, false, &audio)) {
                         did_player2_won = true;
                         currentScreen = GAMEOVER;
                     }
@@ -126,6 +131,7 @@ int main(int argc,  char *argv[]){
         }
         EndDrawing();
     }
+    UnloadAudios(&audio);
     CloseWindow();
     return 0;
 }

@@ -7,6 +7,7 @@
 #include "string_values.h"
 #include "player.h"
 #include "topics.h"
+#include "sound_manager.h"
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,7 +48,10 @@ int main(int argc, char *argv[]) {
 
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE_PLAYER1);
-    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 10  };
+    InitAudioDevice();
+
+    struct Audios audio = LoadAudios(); 
+    Rectangle textBox = { 30, 440, (SCREEN_WIDTH - 60) / 3 * 2 - 20, 20  };
     bool mouseOnText = false;
     GameScreen currentScreen = TITLE;
     SetTargetFPS(60);
@@ -58,6 +62,7 @@ int main(int argc, char *argv[]) {
             case TITLE:
                 if (IsKeyPressed(KEY_ENTER)) {
                     currentScreen = GAMEPLAY;
+                    PlaySound(audio.loading);
                     promptPhrase(topic, client_sock);
                 }
                 break;
@@ -70,10 +75,12 @@ int main(int argc, char *argv[]) {
                     ToggleFlags(&is_receiving_phrase, &is_guessing);
                     framesCounter = 0;
                     AddSystemMessage(GUESS_PHRASE);
+                    strcpy(player.turn, YOUR_TURN);
                 }
 
                 if (is_waiting_for_guess) {
-                    if (!SetOpponentProgress(&player, client_sock))
+                    strcpy(player.turn, OPPONENTS_TURN);
+                    if (!SetOpponentProgress(&player, client_sock, &audio))
                         ToggleFlags(&is_waiting_for_guess, &is_guessing);
                     else currentScreen = GAMEOVER;
                 }
@@ -82,11 +89,11 @@ int main(int argc, char *argv[]) {
                 else mouseOnText = false;
                 
                 if (mouseOnText && is_setting_phrase) {
-                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, true);
+                    ProcessInputForPhrase(phraseBuffer, &letterCount, &is_setting_phrase, &is_receiving_phrase, &framesCounter, &mouseOnText, client_sock, &player, true, &audio);
                 }  else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
                 if (mouseOnText && is_guessing) { 
-                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess, client_sock, &player)) {
+                    if (ProcessInputForLetter(phraseBuffer, &letterCount, &framesCounter, &mouseOnText, &is_guessing, &is_waiting_for_guess, client_sock, &player, true, &audio)) {
                         ReceiveAck(client_sock);
                         did_player1_won = true;
                         currentScreen = GAMEOVER;
@@ -130,6 +137,7 @@ int main(int argc, char *argv[]) {
         }
         EndDrawing();
     }
+    UnloadAudios(&audio);
     CloseWindow();
     return 0;
 }
