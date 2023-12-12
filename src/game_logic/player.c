@@ -160,7 +160,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock, struct Audios *
     if (IsPhraseGuessed(player->opponent_progress, player->player_phrase)) {
         PlaySound(audio->game_over);
         AddSystemMessage(OPPONENT_WON);
-        // SendAck(client_sock);
+        SendAck(client_sock);
         return true;
     }
     

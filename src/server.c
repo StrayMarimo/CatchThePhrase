@@ -105,6 +105,8 @@ int main(int argc, char *argv[]) {
 
                 framesCounter++;
                 break; 
+                case GAMEOVER: 
+                    if (IsKeyPressed(KEY_ENTER)) break;
             default:
                 break;
         }
