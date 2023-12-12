@@ -151,5 +151,5 @@ void getTopic(int client_sock, char *topic) {
     strcat(system_message, CapitalizePhrase(topic));
     strcpy(system_message2, system_message);
     strcpy(system_message, WAITING_FOR_PHRASE);
-    SendAck(client_sock);
+    // SendAck(client_sock);
 }

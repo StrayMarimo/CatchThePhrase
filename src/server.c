@@ -155,7 +155,7 @@ void promptPhrase(char topic[MAX_STRING_SIZE], int client_sock) {
     strcpy(topic, CapitalizePhrase(setupTopic()));
     strcat(system_message, topic);
     SendMessage(client_sock, setupTopic());
-    ReceiveAck(client_sock);
+    // ReceiveAck(client_sock);
     strcpy(system_message2, system_message);
     strcpy(system_message, SET_PHRASE);
 }

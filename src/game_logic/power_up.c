@@ -95,7 +95,7 @@ void RevealALetter(struct Player *player, int client_sock, bool *isGuessing, boo
     }
     char str[2] = {lettterToReveal, '\0'};
     char new_message[MAX_STRING_SIZE] = REVEAL_A_LETTER;
-    sprintf(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
     UpdateProgress(player, lettterToReveal, true);
@@ -106,8 +106,9 @@ void RevealALetter(struct Player *player, int client_sock, bool *isGuessing, boo
 void ReceiveRevealLetter(struct Player *player, int client_sock){
     char buffer[MAX_STRING_SIZE];
     ReceiveMessage(client_sock, buffer);
-    char new_message[MAX_STRING_SIZE];
-    sprintf(new_message, "%s%c", REVEAL_A_LETTER_OPPONENT, buffer[0]);
+    char str[2] = {buffer[0], '\0'};
+    char new_message[MAX_STRING_SIZE] = REVEAL_A_LETTER_OPPONENT;
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
     UpdateProgress(player, buffer[0], false);
