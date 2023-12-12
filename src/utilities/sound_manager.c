@@ -9,7 +9,6 @@ struct Audios LoadAudios() {
     audio.powerup = LoadSound("assets/audio/power_up.wav");
     audio.wrong = LoadSound("assets/audio/wrong.wav");
     audio.game_over = LoadSound("assets/audio/game_over.wav");
-    audio.bgm = LoadSound("assets/audio/bgm.ogg");
 
     return audio;
 }
@@ -20,5 +19,4 @@ void UnloadAudios(struct Audios *audio) {
     UnloadSound(audio->powerup);
     UnloadSound(audio->wrong);
     UnloadSound(audio->game_over);
-    UnloadSound(audio->bgm);
 }

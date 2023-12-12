@@ -58,10 +58,10 @@ if [ "$UNAME" != "Darwin" ]; then
 fi
 
 # Compile
-gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES $LINKS  \
+gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES $LINKS -ldl -pthread  \
     || { echo 'Server compilation failed'; exit 1; }
 echo "Server compiled successfully!"
 
-gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES $LINKS \
+gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES $LINKS -ldl -pthread \
     || { echo 'Client compilation failed'; exit 1; }
 echo "Client compiled successfully!"

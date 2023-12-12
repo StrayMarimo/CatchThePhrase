@@ -6,7 +6,6 @@
 struct Audios
 {
     Sound loading;
-    Sound bgm;
     Sound type;
     Sound powerup;
     Sound wrong;
