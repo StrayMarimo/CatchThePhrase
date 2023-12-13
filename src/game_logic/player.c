@@ -143,7 +143,7 @@ bool SetOpponentProgress(struct Player *player, int client_sock, struct Audios *
     if (!isLetterInPhrase) {
         AddSystemMessage(OPPONENT_NOT_IN_PHRASE);
         player->consecutiveCorrectGuessesOpponent = 0;
-        player->opponent_score -=15;
+        player->opponent_score -=10;
         PlaySound(audio->wrong);
     } else {
         player->consecutiveCorrectGuessesOpponent++;
@@ -190,7 +190,7 @@ bool SetProgress(struct Player *player, char letter, int client_sock, bool *isGu
     }
 
     if (!isLetterInPhrase) {
-        player->score -= 15;
+        player->score -=10;
         player->consecutiveCorrectGuesses = 0;
         AddSystemMessage(NOT_IN_PHRASE);
         PlaySound(audio->wrong);

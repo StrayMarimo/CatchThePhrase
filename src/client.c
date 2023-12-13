@@ -95,6 +95,15 @@ int main(int argc,  char *argv[]){
                     }
                 } else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
+                if (player.score <= 0) {
+                    did_player2_won = false;
+                    currentScreen = GAMEOVER;
+                }
+                if (player.opponent_score <= 0) {
+                    did_player2_won = true;
+                    currentScreen = GAMEOVER;
+                }
+
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
 
