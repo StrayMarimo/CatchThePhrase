@@ -75,7 +75,8 @@ void GetInput(int *letterCount, char *phraseBuffer, struct Player *player, bool 
             phraseBuffer[*letterCount] = (char)key;
             phraseBuffer[(*letterCount) +1] = '\0';
             (*letterCount)++;
-        } else PlaySound(audio->wrong);
+        } 
+        else PlaySound(audio->wrong);
         key = GetCharPressed();  // Check next character in the queue
     }
 }

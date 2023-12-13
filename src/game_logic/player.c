@@ -123,8 +123,9 @@ bool SetOpponentProgress(struct Player *player, int client_sock, struct Audios *
     ReceiveMessage(client_sock, buffer);
 
     strcpy(player->turn, YOUR_TURN);
+    char str[2] = {buffer[0], '\0'};
     char new_message[MAX_STRING_SIZE] = PRINT_LETTER_OPPONENT;
-    sprintf(new_message, "%s%c", new_message, buffer[0]);
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
     if (IsMarkedSpot(player, buffer[0], false)) {

@@ -50,20 +50,20 @@ void RevealNotPresentLetter(struct Player *player, int client_sock){
             break;
         }
     }
+    char str[2] = {randomletter, '\0'};
     char new_message[MAX_STRING_SIZE] = REVEAL_NOT_PRESENT_LETTER;
-    sprintf(new_message, "%s%c", new_message, randomletter);
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
-    char letterMsg[MAX_STRING_SIZE];
-    sprintf(letterMsg, "%c", randomletter);
-    SendMessage(client_sock, letterMsg);
+    SendMessage(client_sock, str);
 }
 
 void ReceiveRevealNotPresentLetter(struct Player *player, int client_sock){
     char buffer[MAX_STRING_SIZE];
+    char str[2] = {buffer[0], '\0'};
     ReceiveMessage(client_sock, buffer);
     char new_message[MAX_STRING_SIZE] = REVEAL_NOT_PRESENT_LETTER_OPPONENT;
-    sprintf(new_message, "%s%c", new_message, buffer[0]);
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
     for(int i = 0; i < 26; i++){
         if(toupper(buffer[0]) == player->opponent_letters_pressed[i]){
@@ -93,21 +93,22 @@ void RevealALetter(struct Player *player, int client_sock, bool *isGuessing, boo
             break;
         }
     }
+    char str[2] = {lettterToReveal, '\0'};
     char new_message[MAX_STRING_SIZE] = REVEAL_A_LETTER;
-    sprintf(new_message, "%s%c!", new_message, lettterToReveal);
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
     UpdateProgress(player, lettterToReveal, true);
-    char letterMsg[MAX_STRING_SIZE];
-    sprintf(letterMsg, "%c", lettterToReveal);
-    SendMessage(client_sock,letterMsg);
+    
+    SendMessage(client_sock, str);
 }
 
 void ReceiveRevealLetter(struct Player *player, int client_sock){
     char buffer[MAX_STRING_SIZE];
     ReceiveMessage(client_sock, buffer);
-    char new_message[MAX_STRING_SIZE];
-    sprintf(new_message, "%s%c", REVEAL_A_LETTER_OPPONENT, buffer[0]);
+    char str[2] = {buffer[0], '\0'};
+    char new_message[MAX_STRING_SIZE] = REVEAL_A_LETTER_OPPONENT;
+    strncat(new_message, str, sizeof(new_message) - strlen(new_message) - 1);
     AddSystemMessage(new_message);
 
     UpdateProgress(player, buffer[0], false);

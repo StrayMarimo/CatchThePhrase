@@ -13,7 +13,10 @@ fi
 # Check if Raylib is already installed
 if [ ! -d "raylib" ]; then
     echo "Raylib not found, cloning..."
-    git clone https://github.com/raysan5/raylib.git
+    # git clone https://github.com/raysan5/raylib.git
+    # wget https://github.com/raysan5/raylib/archive/master.zip
+    unzip master.zip
+    mv raylib-master raylib
 fi
 
 cd raylib/src
@@ -58,10 +61,10 @@ if [ "$UNAME" != "Darwin" ]; then
 fi
 
 # Compile
-gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES $LINKS  \
+gcc $INCLUDE_DIRS $LIBS -o src/server $SERVER_FILE $SRC_FILES $LINKS -ldl -pthread  \
     || { echo 'Server compilation failed'; exit 1; }
 echo "Server compiled successfully!"
 
-gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES $LINKS \
+gcc $INCLUDE_DIRS $LIBS -o src/client $CLIENT_FILE $SRC_FILES $LINKS -ldl -pthread \
     || { echo 'Client compilation failed'; exit 1; }
 echo "Client compiled successfully!"
