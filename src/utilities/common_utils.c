@@ -76,7 +76,7 @@ void GetInput(int *letterCount, char *phraseBuffer, struct Player *player, bool 
             phraseBuffer[(*letterCount) +1] = '\0';
             (*letterCount)++;
         } 
-        // else PlaySound(audio->wrong);
+        else PlaySound(audio->wrong);
         key = GetCharPressed();  // Check next character in the queue
     }
 }
@@ -131,7 +131,7 @@ bool ProcessInputForLetter(char phraseBuffer[MAX_STRING_SIZE], int *letterCount,
     }
 
     if (IsKeyPressed(KEY_ENTER)) {
-        // PlaySound(audio->type);
+        PlaySound(audio->type);
         char new_message[MAX_STRING_SIZE] = PRINT_LETTER;
         strcat(new_message, phraseBuffer);
         AddSystemMessage(new_message);
