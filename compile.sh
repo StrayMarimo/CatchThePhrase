@@ -13,7 +13,10 @@ fi
 # Check if Raylib is already installed
 if [ ! -d "raylib" ]; then
     echo "Raylib not found, cloning..."
-    git clone https://github.com/raysan5/raylib.git
+    # git clone https://github.com/raysan5/raylib.git
+    # wget https://github.com/raysan5/raylib/archive/master.zip
+    unzip master.zip
+    mv raylib-master raylib
 fi
 
 cd raylib/src
